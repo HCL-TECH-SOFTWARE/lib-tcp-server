@@ -16,7 +16,7 @@ tc.inclusionPaths = topTC.inclusionPaths || [
     pocoLoc + '\\Foundation\\include'
 ];
 tc.supportForFileArtifacts = true;
-tc.targetConfiguration = topTC.targetConfiguration || 'WinT.x64-VisualC++-15.0';
+tc.targetConfiguration = topTC.targetConfiguration || 'WinT.x64-VisualC++-17.0';
 tc.targetServicesLibrary = topTC.targetServicesLibrary || 'D:\\git\\rsarte-target-rts\\rsa_rt\\C++\\TargetRTS';
 tc.unitName = 'UnitName_TCPLib';
 tc.copyrightText = `
