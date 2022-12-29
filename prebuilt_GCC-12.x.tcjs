@@ -8,8 +8,7 @@ tc.inclusionPaths = [
 ];
 tc.libraries = [
     '$(RSA_RT_HOME)/tcpserver/libs/tcpServerLib_gcc12.a',
-    '$(RSA_RT_HOME)/tcpserver/poco/LinuxT.x64-gcc-12.x/libPocoJSON.a',
-    '$(RSA_RT_HOME)/tcpserver/poco/LinuxT.x64-gcc-12.x/libPocoNet.a',
-    '$(RSA_RT_HOME)/tcpserver/poco/LinuxT.x64-gcc-12.x/libPocoFoundation.a'
+    '$(RSA_RT_HOME)/tcpserver/poco/LinuxT.x64-gcc-7.x/libPocoJSON.a',
+    '$(RSA_RT_HOME)/tcpserver/poco/LinuxT.x64-gcc-7.x/libPocoNet.a',
+    '$(RSA_RT_HOME)/tcpserver/poco/LinuxT.x64-gcc-7.x/libPocoFoundation.a'
 ];
-tc.externalCommand = '';
