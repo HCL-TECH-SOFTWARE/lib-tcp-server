@@ -16,7 +16,7 @@ tc.inclusionPaths = topTC.inclusionPaths || [
     pocoLoc + '/Foundation/include'
 ];
 tc.supportForFileArtifacts = true;
-tc.targetConfiguration = topTC.targetConfiguration || 'LinuxT.x64-gcc-4.x';
+tc.targetConfiguration = topTC.targetConfiguration || 'LinuxT.x64-gcc-12.x';
 tc.targetServicesLibrary = topTC.targetServicesLibrary || '/install/eclipse/rsa_rt/C++/TargetRTS';
 tc.unitName = 'UnitName_TCPLib';
 tc.copyrightText = `
