@@ -15,6 +15,7 @@ tc.inclusionPaths = topTC.inclusionPaths || [
     pocoLoc + '\\JSON\\include',
     pocoLoc + '\\Foundation\\include'
 ];
+tc.libraries = topTC.libraries;
 tc.supportForFileArtifacts = true;
 tc.targetConfiguration = topTC.targetConfiguration || 'WinT.x64-VisualC++-17.0';
 tc.targetServicesLibrary = topTC.targetServicesLibrary || 'D:\\git\\rsarte-target-rts\\rsa_rt\\C++\\TargetRTS';
