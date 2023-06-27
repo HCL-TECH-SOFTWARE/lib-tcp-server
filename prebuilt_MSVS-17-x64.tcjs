@@ -8,9 +8,5 @@ tc.inclusionPaths = [
     '$(RSA_RT_HOME)/tcpserver/include'
 ];
 tc.libraries = [
-    '$(RSA_RT_HOME)/tcpserver/libs/tcpServerLib_msvs17x64.lib',
-    '$(RSA_RT_HOME)/tcpserver/poco/WinT.x64-VisualC++-17.0/PocoFoundationmd.lib',
-    '$(RSA_RT_HOME)/tcpserver/poco/WinT.x64-VisualC++-17.0/PocoJSONmd.lib',
-    '$(RSA_RT_HOME)/tcpserver/poco/WinT.x64-VisualC++-17.0/PocoNetmd.lib',
-    'Ws2_32.lib'
+    
 ];

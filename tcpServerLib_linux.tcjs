@@ -1,6 +1,5 @@
 let tc = TCF.define(TCF.CPP_TRANSFORM);
 let topTC = TCF.getRootTransformationConfiguration();
-let pocoLoc = topTC.pocoLoc || '/home/username/github/poco';
 
 tc.sources = [
     'platform:/resource/LibTcpServer/LibTCPServer.emx#_n2OxwO5SEeitL-zKjjNp2A'
@@ -9,12 +8,7 @@ tc.createTargetProject = true;
 tc.targetProject = '/LibTCPServer_target';
 tc.type = CppTransformType.Library;
 tc.compilationMakeType = topTC.compilationMakeType || MakeType.GNU_make;
-tc.compileArguments = topTC.compileArguments || '-fexceptions -std=c++11';
-tc.inclusionPaths = topTC.inclusionPaths || [
-    pocoLoc + '/Net/include',
-    pocoLoc + '/JSON/include',
-    pocoLoc + '/Foundation/include'
-];
+tc.compileArguments = topTC.compileArguments;
 tc.supportForFileArtifacts = true;
 tc.targetConfiguration = topTC.targetConfiguration || 'LinuxT.x64-gcc-12.x';
 tc.targetServicesLibrary = topTC.targetServicesLibrary || '/install/eclipse/rsa_rt/C++/TargetRTS';
