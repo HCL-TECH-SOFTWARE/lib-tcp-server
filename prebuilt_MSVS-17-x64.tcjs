@@ -8,5 +8,5 @@ tc.inclusionPaths = [
     '$(RSA_RT_HOME)/tcpserver/include'
 ];
 tc.libraries = [
-    
+    '$(RSA_RT_HOME)/tcpserver/libs/tcpServerLib_msvs17x64.lib'
 ];

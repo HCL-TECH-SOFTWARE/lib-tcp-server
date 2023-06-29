@@ -8,10 +8,7 @@ tc.createTargetProject = true;
 tc.targetProject = '/LibTCPServer_target';
 tc.type = CppTransformType.Library;
 tc.compilationMakeType = topTC.compilationMakeType || MakeType.MS_nmake;
-tc.compileArguments = topTC.compileArguments;
-tc.inclusionPaths = [
-    
-];
+tc.compileArguments = topTC.compileArguments || '$(DEBUG_TAG) /MDd';
 tc.supportForFileArtifacts = true;
 tc.targetConfiguration = topTC.targetConfiguration || 'WinT.x64-VisualC++-17.0';
 tc.targetServicesLibrary = topTC.targetServicesLibrary;
@@ -22,3 +19,4 @@ tc.copyrightText = `
  *******************************************************************************/
 `;
 tc.libraryName = 'tcpServerLib$(LIB_EXT)';
+tc.buildLibraryArguments = '$(DEBUG_TAG)';
