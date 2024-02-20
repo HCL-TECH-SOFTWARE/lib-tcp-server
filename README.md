@@ -1,6 +1,6 @@
 # lib-tcp-server
 A library for [HCL RTist](https://www.devops-community.com/realtime-software-tooling-rtist.html) which allows an RTist application to communicate over TCP with other applications.
-Note: This library requires RTist 10.3 2018.48 or later.
+Note: This library requires RTist 10.3 2018.48 or later. From Model RealTime 12.0.1 release onwards POCO dependency is removed.
 
 ## Usage
 <img src="https://github.com/hcl-pnp-rtist/lib-tcp-server/blob/master/img/usage.jpg" width="805" height="358">
@@ -15,21 +15,9 @@ It's possible to implement a custom handling of incoming messages, but the defau
 To implement your own custom handling of received messages, override the operation `TCPServer::handleReceivedMessageCustom()` and set the config property `defaultHandlingOfReceivedMessages` to false.
 
 ## Build the Library
-The library uses the [POCO C++ libraries](https://pocoproject.org) and you must therefore first clone and build the [POCO GitHub repository](https://github.com/pocoproject/poco) for your particular platform.
+The latest version of library removed the POCO dependency and using APIs from TargetRTS.
 
-Add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your RTist application. Also specify the location of the POCO library root folder by setting the 'pocoLoc' property of your TC (using the Code tab of the TC editor). For example:
-
-`
-tc.pocoLoc = 'D:\\github\\poco';
-`
-
-Also tell the linker where to find the built POCO libraries. For example, for Visual Studio 64 bit set the following:
-
-`
-tc.linkArguments = '/MACHINE:X64 /LIBPATH:"' + tc.pocoLoc + '\\lib64"';
-`
-
-Finally, if you have built POCO as shared libraries remember to set the PATH variable (on Windows) or LD\_LIBRARY\_PATH (on Unix) to include the folder where they are located. For 64 bit builds the folder is called 'bin64' and is in the POCO root folder.
+To make use of this library add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application.
 
 Note that the TC `tcpServerLib.tcjs` is designed to be built as a prerequisite of an executable TC and will reuse some of the TC properties from that executable (using the topTC variable). Here is an example of such a TC property:
 
