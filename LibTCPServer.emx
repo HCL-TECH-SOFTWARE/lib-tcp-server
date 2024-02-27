@@ -51,7 +51,7 @@
           <element xsi:nil="true"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DUwG8-5UEeitL-zKjjNp2A" x="889" y="2159" width="5607" height="7494"/>
         </children>
-        <children xmi:type="notation:Shape" xmi:id="_kdX4MO5VEeitL-zKjjNp2A" type="Note" fontName="Segoe UI" fontHeight="8" description="&lt;p>Library for letting an RTist application communicate over TCP with other applications. For example, external applications can use it to send events into the RTist application. Note that this library uses the POCO library, so you must first download and build it before you can build this library.&lt;/p>" fillColor="13956346" transparency="0" lineColor="12632258" lineWidth="1">
+        <children xmi:type="notation:Shape" xmi:id="_kdX4MO5VEeitL-zKjjNp2A" type="Note" fontName="Segoe UI" fontHeight="8" description="&lt;p>Library for letting an DevOps Model RealTime application communicate over TCP with other applications. For example, external applications can use it to send events into the DevOps Model RealTime application.&lt;/p>" fillColor="13956346" transparency="0" lineColor="12632258" lineWidth="1">
           <children xmi:type="notation:BasicDecorationNode" xmi:id="_kdYfQO5VEeitL-zKjjNp2A" type="DiagramName">
             <element xsi:nil="true"/>
           </children>
@@ -612,7 +612,7 @@ if (data != 0) {
 }
 
 // Make the JSON format identical to 'sendEvent' or 'invokeEvent' objects for incoming events
-// so it becomes possible to build a distributed RTist application where one
+// so it becomes possible to build a distributed Model RealTime application where one
 // executable can consume the output of another executable.
 str.append(", \"command\" : \"");
 if (msg->priority == System) {
