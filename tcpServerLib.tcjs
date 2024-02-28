@@ -15,8 +15,7 @@ tc.targetServicesLibrary = topTC.targetServicesLibrary;
 tc.unitName = 'UnitName_TCPLib';
 tc.copyrightText = `
 /*******************************************************************************
- * (c) Copyright HCL Technologies Ltd. 2018.  MIT Licensed!
+ * (c) Copyright HCL Technologies Ltd. 2018, 2024.  MIT Licensed!
  *******************************************************************************/
 `;
 tc.libraryName = 'tcpServerLib$(LIB_EXT)';
-tc.buildLibraryArguments = '$(DEBUG_TAG)';

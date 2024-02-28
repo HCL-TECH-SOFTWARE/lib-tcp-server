@@ -3,7 +3,6 @@ tc.sources = [
     'platform:/resource/LibTcpServer/LibTCPServer.emx#_n2OxwO5SEeitL-zKjjNp2A'
 ];
 tc.type = CppTransformType.ExternalLibrary;
-tc.externalCommand = '';
 tc.inclusionPaths = [
     '$(RSA_RT_HOME)/tcpserver/include'
 ];
