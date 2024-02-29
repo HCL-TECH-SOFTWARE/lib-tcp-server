@@ -1,0 +1,18 @@
+let tc = TCF.define(TCF.CPP_TRANSFORM);
+
+tc.sources = [
+    'platform:/resource/LibTcpServer/LibTCPServer.emx#_n2OxwO5SEeitL-zKjjNp2A',
+];
+tc.compilationMakeArguments = '';
+tc.compilationMakeType = MakeType.GNU_make;
+tc.copyrightText = `
+/*******************************************************************************
+ * (c) Copyright HCL Technologies Ltd. 2018, 2024.  MIT Licensed!
+ *******************************************************************************/
+`;
+tc.createTargetProject = true;
+tc.libraryName = 'tcpServerLib$(LIB_EXT)';
+tc.targetConfiguration = 'WinT.x64-MinGw-12.2.0';
+tc.targetProject = '/LibTCPServer_target';
+tc.type = CppTransformType.Library;
+tc.unitName = 'UnitName_TCPLib';
