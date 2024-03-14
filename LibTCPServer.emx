@@ -279,8 +279,8 @@
           <subvertex xmi:type="uml:Pseudostate" xmi:id="_5rHTeO5TEeitL-zKjjNp2A"/>
           <subvertex xmi:type="uml:State" xmi:id="_5rHTee5TEeitL-zKjjNp2A" name="WaitForRequest">
             <entry xmi:type="uml:OpaqueBehavior" xmi:id="_5rHTeu5TEeitL-zKjjNp2A" name="Entry">
-              <language>C++</language>
-              <body>external.enable();</body>
+              <language><![CDATA[C++]]></language>
+              <body><![CDATA[external.enable();]]></body>
             </entry>
           </subvertex>
           <subvertex xmi:type="uml:State" xmi:id="_bd0RUO5XEeitL-zKjjNp2A" name="Stopped"/>
@@ -289,30 +289,30 @@
               <details xmi:id="_5rHTfu5TEeitL-zKjjNp2A" key="Initial"/>
             </eAnnotations>
             <effect xmi:type="uml:OpaqueBehavior" xmi:id="_5rHTf-5TEeitL-zKjjNp2A" name="Effect">
-              <language>C++</language>
-              <body>// Give the subcapsule a chance to override configuration properties
+              <language><![CDATA[C++]]></language>
+              <body><![CDATA[// Give the subcapsule a chance to override configuration properties
 init();
 // set-up a server socket
 
 LocalServerConnection *lsc = new LocalServerConnection(*this);
 
-//cout &lt;&lt; &quot;TCP server started&quot; &lt;&lt; endl;</body>
+//cout << "TCP server started" << endl;]]></body>
             </effect>
           </transition>
           <transition xmi:id="_5rHTgO5TEeitL-zKjjNp2A" name="requestReceived" source="_5rHTee5TEeitL-zKjjNp2A" target="_5rHTee5TEeitL-zKjjNp2A">
             <effect xmi:type="uml:OpaqueBehavior" xmi:id="_5rHTge5TEeitL-zKjjNp2A" name="Effect">
-              <language>C++</language>
-              <body>	// Process all available external data
+              <language><![CDATA[C++]]></language>
+              <body><![CDATA[	// Process all available external data
 	unsigned int remaining;
 	do {
-		std::pair&lt;std::string, LocalServerConnection*>* data;
-		remaining = external.dataPopFront((void**) &amp;data);
+		std::pair<std::string, LocalServerConnection*>* data;
+		remaining = external.dataPopFront((void**) &data);
 		if (data == 0)
 			break;
 
-		std::string&amp; str = data->first;
+		std::string& str = data->first;
 		if (config.logToStdOut)
-			std::cout &lt;&lt; &quot;External data: &quot; &lt;&lt; str &lt;&lt; std::endl;
+			std::cout << "External data: " << str << std::endl;
 
 		if (config.defaultHandlingOfReceivedMessages) {
 			// Perform default message handling, assuming JSON encoded messages on RT specific format
@@ -327,7 +327,7 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 	}
 	while (remaining > 0);
 
-</body>
+]]></body>
             </effect>
             <trigger xmi:id="_5rHTgu5TEeitL-zKjjNp2A" name="" port="_5rHTO-5TEeitL-zKjjNp2A">
               <event xmi:type="uml:CallEvent" href="platform:/plugin/com.ibm.xtools.umldt.rt.cpp.core/libraries/RTClasses.emx#_17fplbIlEduJc5NEaBCMOw?RTClasses/External/event?"/>
@@ -339,14 +339,14 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
         </region>
       </ownedBehavior>
       <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_5rH6Qu5TEeitL-zKjjNp2A" name="handleReceivedMessageDefault" specification="_5rH6Ru5TEeitL-zKjjNp2A">
-        <language>C++</language>
-        <body>	
+        <language><![CDATA[C++]]></language>
+        <body><![CDATA[	
 	if(str.empty())
 	{
 		return;
 	}
 	// First check for some special HTTP requests
-	if (str.rfind(&quot;GET /getPorts&quot;, 0) == 0) {
+	if (str.rfind("GET /getPorts", 0) == 0) {
 		std::string strResult = getPorts();
 		conn->replyHTTPStatus(ITCPConnection::Status::OK, strResult);
 		return;
@@ -360,12 +360,12 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		return;
 	}
 
-	std::string cmd = jsonResult[&quot;command&quot;].get_string();
+	std::string cmd = jsonResult["command"].get_string();
 	if (config.logToStdOut)
-		std::cout &lt;&lt; &quot;JSON command received: &quot; &lt;&lt; cmd &lt;&lt; std::endl;
+		std::cout << "JSON command received: " << cmd << std::endl;
 
-	if (cmd == &quot;sendEvent&quot; || cmd == &quot;invokeEvent&quot;) {
-		std::string portName =  jsonResult[&quot;port&quot;].get_string();
+	if (cmd == "sendEvent" || cmd == "invokeEvent") {
+		std::string portName =  jsonResult["port"].get_string();
 
 		// Find a matching port in this capule
 		const RTActor_class* actorData = getActorData();
@@ -373,7 +373,7 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		RTProtocol* foundPort = 0;
 		const RTPortDescriptor* foundPortDescriptor = 0;
 		const RTPortDescriptor* portDescriptor = actorData->ports;
-		for (int i = actorData->numPorts; --i >= 0 &amp;&amp; !foundPortDescriptor; ++portDescriptor ) {
+		for (int i = actorData->numPorts; --i >= 0 && !foundPortDescriptor; ++portDescriptor ) {
 			RTProtocol* port = RTObjectOf( RTProtocol, portDescriptor->offset, this );
 			if (portName == port->getName()) {
 				foundPortDescriptor = portDescriptor;
@@ -382,7 +382,7 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		}
 
 		if (!foundPortDescriptor || !foundPort) {
-			conn->replyStatus(ITCPConnection::Status::Error, &quot;Failed to find port: &quot; + portName);
+			conn->replyStatus(ITCPConnection::Status::Error, "Failed to find port: " + portName);
 			return;
 		}
 
@@ -390,11 +390,11 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		const RTProtocolDescriptor* protocolDescriptorConjugate = protocolDescriptor->conjugate;
 
 		// Find a matching out event in the port protocol
-		std::string eventName =  jsonResult[&quot;event&quot;].get_string();
+		std::string eventName =  jsonResult["event"].get_string();
 
 		const RTSignalDescriptor* foundSignalDescriptor = 0;
 	    const RTSignalDescriptor* signalDescriptor = protocolDescriptorConjugate->inSignals;
-	    for (int sigCount  = protocolDescriptorConjugate->numInSignals; --sigCount >= 0 &amp;&amp; !foundSignalDescriptor; ++signalDescriptor ) {
+	    for (int sigCount  = protocolDescriptorConjugate->numInSignals; --sigCount >= 0 && !foundSignalDescriptor; ++signalDescriptor ) {
 	    	if (eventName == signalDescriptor->name) {
 	    		foundSignalDescriptor = signalDescriptor;
 	    	}
@@ -402,15 +402,15 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 
 	    bool incomingEvent = false;
 	    if (!foundSignalDescriptor) {
-			// No out event found. Check if the &quot;incomingEvent&quot; flag is set. In that case the event is &quot;incoming&quot; and should be handled by
+			// No out event found. Check if the "incomingEvent" flag is set. In that case the event is "incoming" and should be handled by
 			// the TCPServer or the capsule that inherits from it, rather than being sent out to another capsule.
-	    	std::string incomingEventString =  jsonResult[&quot;incomingEvent&quot;].get_string();
+	    	std::string incomingEventString =  jsonResult["incomingEvent"].get_string();
 
 			if (!incomingEventString.empty()) {
 				// Doesn't matter what this attribute is set to
 				incomingEvent = true;
 				const RTSignalDescriptor* signalDescriptor = protocolDescriptor->inSignals;
-				for (int sigCount = protocolDescriptor->numInSignals; --sigCount >= 0 &amp;&amp; !foundSignalDescriptor; ++signalDescriptor) {
+				for (int sigCount = protocolDescriptor->numInSignals; --sigCount >= 0 && !foundSignalDescriptor; ++signalDescriptor) {
 					if (eventName == signalDescriptor->name) {
 						foundSignalDescriptor = signalDescriptor;
 					}
@@ -419,59 +419,59 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		}
 	    
 	    if (!foundSignalDescriptor) {
-			conn->replyStatus(ITCPConnection::Status::Error, &quot;Failed to find event: &quot; + eventName);
+			conn->replyStatus(ITCPConnection::Status::Error, "Failed to find event: " + eventName);
 			return;
 	    }
 
-	    std::string dataString =  jsonResult[&quot;data&quot;].get_string();
+	    std::string dataString =  jsonResult["data"].get_string();
 	    void* data = 0;
 		const RTObject_class* dataType = 0;
-	    if (foundSignalDescriptor->type != &amp;RTType_void &amp;&amp; !dataString.empty()) {
+	    if (foundSignalDescriptor->type != &RTType_void && !dataString.empty()) {
 	    	// The signal expects data and we have data. Decode the data from ASCII format.	    		    		   
 	    	RTMemoryInBuffer source (dataString.c_str(), dataString.size());
-	    	RTAsciiDecoding decoder(&amp;source);
+	    	RTAsciiDecoding decoder(&source);
 			
 	    	/*
-	    	Var var_type = object->get(&quot;type&quot;);
+	    	Var var_type = object->get("type");
 			if (var_type.isEmpty()) {
-				conn->replyStatus(ITCPConnection::Status::Error, &quot;Type of event data must be specified.&quot;);
+				conn->replyStatus(ITCPConnection::Status::Error, "Type of event data must be specified.");
 				return;
 			}					
 	    	
-	    	RTJsonDecoding decoder(dataString, var_type.convert&lt;string>());
+	    	RTJsonDecoding decoder(dataString, var_type.convert<string>());
 	    	*/
-			if (decoder.get(&amp;data, &amp;dataType) == 0) {
-				conn->replyStatus(ITCPConnection::Status::Error, &quot;Failed to decode data: &quot; + dataString);
+			if (decoder.get(&data, &dataType) == 0) {
+				conn->replyStatus(ITCPConnection::Status::Error, "Failed to decode data: " + dataString);
 				return;
 			}
 			
-			if (dataType == &amp;RTType_RTUnknownObject) {
-				conn->replyStatus(ITCPConnection::Status::Error, &quot;Failed to decode data (it has an unknown type): &quot; + dataString);
+			if (dataType == &RTType_RTUnknownObject) {
+				conn->replyStatus(ITCPConnection::Status::Error, "Failed to decode data (it has an unknown type): " + dataString);
 				return;
 			}
 
 			// TODO: Check so that dataType is compatible with foundSignalDescriptor->type
 
-	    	//foundSignalDescriptor->type->decode(data, &amp;decoder);
+	    	//foundSignalDescriptor->type->decode(data, &decoder);
 	    }
 
 	    // Is a port index specified?
-	    int portIndex = jsonResult[&quot;portIndex&quot;].get_int();
+	    int portIndex = jsonResult["portIndex"].get_int();
 	    
-	    if (cmd == &quot;sendEvent&quot;) {	    
-	    	std::string priorityString =  jsonResult[&quot;priority&quot;].get_string();
-	    	std::string str_priority = &quot;General&quot;;
+	    if (cmd == "sendEvent") {	    
+	    	std::string priorityString =  jsonResult["priority"].get_string();
+	    	std::string str_priority = "General";
 	    	if (!priorityString.empty())
 	    		str_priority = priorityString;
 	    			
 	    	int priority = General; // Default
-	    	if (str_priority == &quot;Panic&quot;)
+	    	if (str_priority == "Panic")
 	    		priority = Panic;
-	    	else if (str_priority == &quot;High&quot;)
+	    	else if (str_priority == "High")
 	    		priority = High;
-	    	else if (str_priority == &quot;Low&quot;)
+	    	else if (str_priority == "Low")
 	    		priority = Low;
-	    	else if (str_priority == &quot;Background&quot;)
+	    	else if (str_priority == "Background")
 	    		priority = Background;
 	    	
 	    	if (incomingEvent) {
@@ -480,7 +480,7 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 
 				if( msg == (RTMessage *)0 )
 				{
-					conn->replyStatus(ITCPConnection::Status::Error, &quot;Out of memory when attempting to inject incoming event &quot; + eventName);
+					conn->replyStatus(ITCPConnection::Status::Error, "Out of memory when attempting to inject incoming event " + eventName);
 					context()->setError(RTController::noMem, RTController::SystemService, (const void *)0, (const void *)0 );
 					return;
 				}
@@ -506,9 +506,9 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 				}
 	    	}
 	    	
-			conn->replyStatus(ITCPConnection::Status::OK, &quot;Command sendEvent succeeded!&quot;);
+			conn->replyStatus(ITCPConnection::Status::OK, "Command sendEvent succeeded!");
 	    }
-	    else if (cmd == &quot;invokeEvent&quot;) {
+	    else if (cmd == "invokeEvent") {
 	    	RTMessage* replies = new RTMessage[foundPort->size()];
 	    	int result = (portIndex == -1) ?
 					foundPort->invoke(replies, foundSignalDescriptor->value, data, foundSignalDescriptor->type, true /* implicitReply */) :
@@ -520,46 +520,46 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 				return;
 			}   
 			
-			std::string strResult = &quot;[&quot;;
-			for (int i = 0; i &lt; result /* number of replies */; i++) {
+			std::string strResult = "[";
+			for (int i = 0; i < result /* number of replies */; i++) {
 				if (i > 0)
-					strResult.append(&quot;, &quot;);
+					strResult.append(", ");
 				if (!replies[i].isValid()) {
 					// Invalid reply.
-					strResult.append(&quot;{\&quot;isValid\&quot; : false}&quot;);
+					strResult.append("{\"isValid\" : false}");
 					continue;
 				}
 				RTDynamicStringOutBuffer buf;			
-				//RTJsonEncoding coding(&amp;buf);
-				//coding.put_msg(&amp;replies[i]);
-				strResult.append(&quot;{ \&quot;event\&quot; : \&quot;&quot;);
+				//RTJsonEncoding coding(&buf);
+				//coding.put_msg(&replies[i]);
+				strResult.append("{ \"event\" : \"");
 				strResult.append(replies[i].getSignalName());
-				strResult.append(&quot;\&quot; &quot;);
+				strResult.append("\" ");
 				
 				const RTObject_class * replyType = replies[i].getType();
 				const void* replyData = replies[i].getData();
 
 				if (replyType != 0) {
-					strResult.append(&quot;, \&quot;type\&quot; : \&quot;&quot;);
+					strResult.append(", \"type\" : \"");
 					strResult.append(replyType->name());
-					strResult.append(&quot;\&quot; &quot;);
+					strResult.append("\" ");
 				}
 				if (replyData != 0) {
 					RTDynamicStringOutBuffer buf;		
-					RTAsciiEncoding coding(&amp;buf);
+					RTAsciiEncoding coding(&buf);
 					coding.put(replyData, replyType);	
-					strResult.append(&quot;, \&quot;data\&quot; : &quot;);
+					strResult.append(", \"data\" : ");
 					std::string data(buf.getString());
 					
 					strResult.append(stringify(data));
-					strResult.append(&quot; &quot;);
+					strResult.append(" ");
 				}					
-				strResult.append(&quot;}&quot;);
+				strResult.append("}");
 			}
-			strResult.append(&quot;]&quot;);
+			strResult.append("]");
 			delete[] replies;
 			
-			conn->replyStatus(ITCPConnection::Status::OK, &quot;Command invokeEvent succeeded!&quot;, strResult);
+			conn->replyStatus(ITCPConnection::Status::OK, "Command invokeEvent succeeded!", strResult);
 	    }
 
 		if (dataType != 0) {
@@ -567,19 +567,19 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 			dataType->destroy(data, RTObject_class::DestroyAndDeallocate);
 		}			
 	}
-	else if (cmd == &quot;getPorts&quot;) {
+	else if (cmd == "getPorts") {
 		// Get all ports of this capule		
 		std::string strResult = getPorts();
-		conn->replyStatus(ITCPConnection::Status::OK, &quot;Command getPorts succeeded!&quot;, strResult);
+		conn->replyStatus(ITCPConnection::Status::OK, "Command getPorts succeeded!", strResult);
 	}
 	else {
 		// Unknown command
-		conn->replyStatus(ITCPConnection::Status::Error, &quot;Unknown command &quot; + cmd);	
-	}</body>
+		conn->replyStatus(ITCPConnection::Status::Error, "Unknown command " + cmd);	
+	}]]></body>
       </ownedBehavior>
       <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_29hpUPF5EeiGPObbQ5S9rA" name="unexpectedMessage" specification="_j8WecPF5EeiGPObbQ5S9rA">
-        <language>C++</language>
-        <body>// Called when an outgoing message arrives at the TCPServer capsule part.
+        <language><![CDATA[C++]]></language>
+        <body><![CDATA[// Called when an outgoing message arrives at the TCPServer capsule part.
 // JSON encode it and send the encoding to the specified remote host.
 
 	if (config.remoteHost.empty() || config.remotePort == 0)
@@ -587,67 +587,67 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 
 	const RTMessage *msg = getMsg();
 
-//RTJsonEncoding coding(&amp;buf);
+//RTJsonEncoding coding(&buf);
 //coding.put_msg(msg);
 //string str(buf.getString(), RTMemoryUtil::strlen(buf.getString()) - 1);
 
-	std::string str = &quot;{ \&quot;event\&quot; : \&quot;&quot;;
+	std::string str = "{ \"event\" : \"";
 	str.append(msg->getSignalName());
-	str.append(&quot;\&quot; &quot;);
+	str.append("\" ");
 
 	const RTObject_class *type = msg->getType();
 	const void *data = msg->getData();
 
 	if (type != 0) {
-		str.append(&quot;, \&quot;type\&quot; : \&quot;&quot;);
+		str.append(", \"type\" : \"");
 		str.append(type->name());
-		str.append(&quot;\&quot; &quot;);
+		str.append("\" ");
 	}
 	if (data != 0) {
 		RTDynamicStringOutBuffer buf;
-		RTAsciiEncoding coding(&amp;buf);
+		RTAsciiEncoding coding(&buf);
 		coding.put(data, type);
-		str.append(&quot;, \&quot;data\&quot; : \&quot;&quot;);
+		str.append(", \"data\" : \"");
 		str.append(buf.getString());
-		str.append(&quot;\&quot; &quot;);
+		str.append("\" ");
 	}
 
 // Make the JSON format identical to 'sendEvent' or 'invokeEvent' objects for incoming events
 // so it becomes possible to build a distributed Model RealTime application where one
 // executable can consume the output of another executable.
-	str.append(&quot;, \&quot;command\&quot; : \&quot;&quot;);
+	str.append(", \"command\" : \"");
 	if (msg->priority == System) {
 		// Invoked event
-		str.append(&quot;invokeEvent\&quot;&quot;);
+		str.append("invokeEvent\"");
 	} else {
 		// Sent event
-		std::string priority = &quot;General&quot;;
+		std::string priority = "General";
 		if (msg->priority == Panic)
-			priority = &quot;Panic&quot;;
+			priority = "Panic";
 		else if (msg->priority == High)
-			priority = &quot;High&quot;;
+			priority = "High";
 		else if (msg->priority == Low)
-			priority = &quot;Low&quot;;
+			priority = "Low";
 		else if (msg->priority == Background)
-			priority = &quot;Background&quot;;
+			priority = "Background";
 
-		str.append(&quot;sendEvent\&quot;, \&quot;priority\&quot; : \&quot;&quot;);
+		str.append("sendEvent\", \"priority\" : \"");
 		str.append(priority);
-		str.append(&quot;\&quot;&quot;);
+		str.append("\"");
 	}
 
 // Append port and portIndex
 	RTProtocol *port = msg->sap();
-	if (port != 0 &amp;&amp; port->getName() != 0) {
-		str.append(&quot;, \&quot;port\&quot; : \&quot;&quot;);
+	if (port != 0 && port->getName() != 0) {
+		str.append(", \"port\" : \"");
 		str.append(port->getName());
-		str.append(&quot;\&quot;, \&quot;portIndex\&quot; : &quot;);
+		str.append("\", \"portIndex\" : ");
 		str.append(std::to_string(msg->sapIndex0()));
 	}
-	str.append(&quot;}&quot;);
+	str.append("}");
 
 	if (config.logToStdOut)
-		std::cout &lt;&lt; &quot;Out message: &quot; &lt;&lt; str &lt;&lt; std::endl;
+		std::cout << "Out message: " << str << std::endl;
 
 	bool writeSuccess = false;
 
@@ -655,30 +655,30 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 	RTIOMonitor *ioM = new RTIOMonitor();
 	tcp.registerWith(ioM);
 	if (!tcp.create()) {
-		std::cerr &lt;&lt; &quot;TCP socket creation is failed.&quot; &lt;&lt; std::endl;
+		std::cerr << "TCP socket creation is failed." << std::endl;
 		tcp.close();
 		delete ioM;
 		return;
 	}
-	if (!tcp.connect(static_cast&lt;const char*>(config.remoteHost.c_str()),
-			static_cast&lt;int>(config.remotePort))) {
-		std::cerr &lt;&lt; &quot;Unable to connect to &quot; &lt;&lt; config.remoteHost &lt;&lt; &quot; on port &quot;
-				&lt;&lt; config.remotePort &lt;&lt; std::endl;
+	if (!tcp.connect(static_cast<const char*>(config.remoteHost.c_str()),
+			static_cast<int>(config.remotePort))) {
+		std::cerr << "Unable to connect to " << config.remoteHost << " on port "
+				<< config.remotePort << std::endl;
 		return;
 	}
-	if (tcp.write(static_cast&lt;const char*>(str.c_str()),
-			static_cast&lt;int>(str.length())) &lt; 0) {
-		std::cerr &lt;&lt; &quot;Error: Failed to write to socket for &quot;
-				&lt;&lt; config.remoteHost &lt;&lt; &quot; on port &quot; &lt;&lt; config.remotePort
-				&lt;&lt; std::endl;
+	if (tcp.write(static_cast<const char*>(str.c_str()),
+			static_cast<int>(str.length())) < 0) {
+		std::cerr << "Error: Failed to write to socket for "
+				<< config.remoteHost << " on port " << config.remotePort
+				<< std::endl;
 		return;
 	}
 	writeSuccess = true;
 
 	static const RTTimespec awhile(1L, 0L);
-	while (!ioM->wait(&amp;awhile)) {
+	while (!ioM->wait(&awhile)) {
 		std::this_thread::sleep_for(std::chrono::seconds(1));
-		std::cout &lt;&lt; &quot;Waiting for out message... &quot; &lt;&lt; std::endl;
+		std::cout << "Waiting for out message... " << std::endl;
 	}
 
 	// Read response, if any
@@ -695,18 +695,18 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 	tcp.close();
 
 	if (config.logToStdOut)
-		std::cout &lt;&lt; &quot;Response for out message: &quot; &lt;&lt; received &lt;&lt; std::endl;
+		std::cout << "Response for out message: " << received << std::endl;
 	handleResponseForOutMessage(received);
 
-	// We failed to read a response, which typically just means the other end didn't give any. So this is not to be treated as an error.</body>
+	// We failed to read a response, which typically just means the other end didn't give any. So this is not to be treated as an error.]]></body>
       </ownedBehavior>
       <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_mO8X4PGUEeiGPObbQ5S9rA" name="init" specification="_dbgzYPGUEeiGPObbQ5S9rA">
-        <language>C++</language>
-        <body>// Override to set custom values of configuration properties </body>
+        <language><![CDATA[C++]]></language>
+        <body><![CDATA[// Override to set custom values of configuration properties ]]></body>
       </ownedBehavior>
       <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_YPc3cHxrEemQvv1wPLSA6g" name="handleResponseForOutMessage" specification="_YPbpUHxrEemQvv1wPLSA6g">
-        <language>C++</language>
-        <body>	if(response.empty()) {
+        <language><![CDATA[C++]]></language>
+        <body><![CDATA[	if(response.empty()) {
 		return;
 	}
 
@@ -717,22 +717,22 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		return;
 	}
 
-	std::string cmd = jsonResult[&quot;command&quot;].get_string();
+	std::string cmd = jsonResult["command"].get_string();
 	if (cmd.empty())
 		return; // No command provided - skip it
 
 	if (config.logToStdOut)
-		std::cout &lt;&lt; &quot;Response contained JSON command: &quot; &lt;&lt; cmd &lt;&lt; std::endl;
+		std::cout << "Response contained JSON command: " << cmd << std::endl;
 
-	if (cmd == &quot;reply&quot;) {
-		std::string portName =  jsonResult[&quot;port&quot;].get_string();
+	if (cmd == "reply") {
+		std::string portName =  jsonResult["port"].get_string();
 		// Find a matching port in this capule
 		const RTActor_class* actorData = getActorData();
 
 		RTProtocol* foundPort = 0;
 		const RTPortDescriptor* foundPortDescriptor = 0;
 		const RTPortDescriptor* portDescriptor = actorData->ports;
-		for (int i = actorData->numPorts; --i >= 0 &amp;&amp; !foundPortDescriptor; ++portDescriptor ) {
+		for (int i = actorData->numPorts; --i >= 0 && !foundPortDescriptor; ++portDescriptor ) {
 			RTProtocol* port = RTObjectOf( RTProtocol, portDescriptor->offset, this );
 			if (portName == port->getName()) {
 				foundPortDescriptor = portDescriptor;
@@ -741,7 +741,7 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		}
 
 		if (!foundPortDescriptor || !foundPort) {
-			std::cerr &lt;&lt; &quot;ERROR: Failed to find port: &quot; &lt;&lt; portName &lt;&lt; std::endl;
+			std::cerr << "ERROR: Failed to find port: " << portName << std::endl;
 			return;
 		}
 
@@ -749,59 +749,59 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		const RTProtocolDescriptor* protocolDescriptorConjugate = protocolDescriptor->conjugate;
 
 		// Find a matching out event in the port protocol
-		std::string eventName =  jsonResult[&quot;event&quot;].get_string();
-		std::cout &lt;&lt;&quot;rajnesh handleResponseForOutMessage eventName->&quot; &lt;&lt; eventName &lt;&lt; std::endl;
+		std::string eventName =  jsonResult["event"].get_string();
+		std::cout <<"rajnesh handleResponseForOutMessage eventName->" << eventName << std::endl;
 		const RTSignalDescriptor* foundSignalDescriptor = 0;
 	    const RTSignalDescriptor* signalDescriptor = protocolDescriptorConjugate->inSignals;
-	    for (int sigCount  = protocolDescriptorConjugate->numInSignals; --sigCount >= 0 &amp;&amp; !foundSignalDescriptor; ++signalDescriptor ) {
+	    for (int sigCount  = protocolDescriptorConjugate->numInSignals; --sigCount >= 0 && !foundSignalDescriptor; ++signalDescriptor ) {
 	    	if (eventName == signalDescriptor->name) {
 	    		foundSignalDescriptor = signalDescriptor;
 	    	}
 	    }
 
 	    if (!foundSignalDescriptor) {
-	    	std::cerr &lt;&lt; &quot;ERROR: Failed to find event: &quot; &lt;&lt; eventName &lt;&lt; std::endl;
+	    	std::cerr << "ERROR: Failed to find event: " << eventName << std::endl;
 			return;
 	    }
 
-	    std::string dataString =  jsonResult[&quot;data&quot;].get_string();
+	    std::string dataString =  jsonResult["data"].get_string();
 	    void* data = 0;
 		const RTObject_class* dataType = 0;
-	    if (foundSignalDescriptor->type != &amp;RTType_void &amp;&amp; !dataString.empty()) {
+	    if (foundSignalDescriptor->type != &RTType_void && !dataString.empty()) {
 	    	// The signal expects data and we have data. Decode the data from ASCII format.	    		    		   
-			std::cout &lt;&lt;&quot;rajnesh handleResponseForOutMessage dataString->&quot; &lt;&lt; dataString &lt;&lt; std::endl;
+			std::cout <<"rajnesh handleResponseForOutMessage dataString->" << dataString << std::endl;
 	    	RTMemoryInBuffer source (dataString.c_str(), dataString.size());
-	    	RTAsciiDecoding decoder(&amp;source);
+	    	RTAsciiDecoding decoder(&source);
 			
 	    	/*
-	    	Var var_type = object->get(&quot;type&quot;);
+	    	Var var_type = object->get("type");
 			if (var_type.isEmpty()) {
-				conn->replyStatus(ITCPConnection::Status::Error, &quot;Type of event data must be specified.&quot;);
+				conn->replyStatus(ITCPConnection::Status::Error, "Type of event data must be specified.");
 				return;
 			}					
 	    	
-	    	RTJsonDecoding decoder(dataString, var_type.convert&lt;string>());
+	    	RTJsonDecoding decoder(dataString, var_type.convert<string>());
 	    	*/
-			if (decoder.get(&amp;data, &amp;dataType) == 0) {
-				std::cerr &lt;&lt; &quot;ERROR: Failed to decode data: &quot; &lt;&lt; dataString &lt;&lt; std::endl;
+			if (decoder.get(&data, &dataType) == 0) {
+				std::cerr << "ERROR: Failed to decode data: " << dataString << std::endl;
 				return;
 			}
 			
-			if (dataType == &amp;RTType_RTUnknownObject) {
-				std::cerr &lt;&lt; &quot;ERROR: Failed to decode data (it has an unknown type): &quot; &lt;&lt; dataString &lt;&lt; std::endl;
+			if (dataType == &RTType_RTUnknownObject) {
+				std::cerr << "ERROR: Failed to decode data (it has an unknown type): " << dataString << std::endl;
 				return;
 			}
 
 			// TODO: Check so that dataType is compatible with foundSignalDescriptor->type
 
-	    	//foundSignalDescriptor->type->decode(data, &amp;decoder);
+	    	//foundSignalDescriptor->type->decode(data, &decoder);
 	    }
 	    
 	    // We are now ready to perform the reply
 	    int result = foundPort->reply(foundSignalDescriptor->value, data, foundSignalDescriptor->type);		
 		if (result == 0) {
 			// Failed to reply
-			std::cerr &lt;&lt; &quot;ERROR: &quot; &lt;&lt; context()->strerror() &lt;&lt; std::endl;
+			std::cerr << "ERROR: " << context()->strerror() << std::endl;
 			return;
 		}   
 		
@@ -812,29 +812,29 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 	}	
 	else {
 		// Unknown command
-		std::cerr &lt;&lt; &quot;ERROR: Unknown command: &quot; &lt;&lt; cmd &lt;&lt; std::endl;
+		std::cerr << "ERROR: Unknown command: " << cmd << std::endl;
 	}
-	</body>
+	]]></body>
       </ownedBehavior>
       <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_CDT-MLqtEem5vPW57wwiFQ" name="getPorts" specification="_rvlgsLnsEem5vPW57wwiFQ">
-        <language>C++</language>
-        <body>		const RTActor_class* actorData = getActorData();
+        <language><![CDATA[C++]]></language>
+        <body><![CDATA[		const RTActor_class* actorData = getActorData();
 
 		const RTPortDescriptor* portDescriptor = actorData->ports;
-		std::string strResult = &quot;[&quot;;
+		std::string strResult = "[";
 		bool firstPort = true;
 		for (int i = actorData->numPorts; --i >= 0; ++portDescriptor ) {
 			RTProtocol* port = RTObjectOf( RTProtocol, portDescriptor->offset, this );
-			if (port->getName() == &quot;external&quot; &amp;&amp; port->getInfo()->protocol->name == &quot;External&quot;)
+			if (port->getName() == "external" && port->getInfo()->protocol->name == "External")
 				continue; // Skip the 'external' port of the TCPServer capsule since it's only for internal use
 
 			if (!firstPort)
-				strResult.append(&quot;, &quot;);
+				strResult.append(", ");
 			firstPort = false;
 
-			strResult.append(&quot;{ \&quot;name\&quot; : \&quot;&quot;);
+			strResult.append("{ \"name\" : \"");
 			strResult.append(port->getName());
-			strResult.append(&quot;\&quot;, \&quot;events\&quot; : [&quot;);
+			strResult.append("\", \"events\" : [");
 
 			// Get all out events of the port's protocol
 			const RTProtocolDescriptor* protocolDescriptor = portDescriptor->protocol;
@@ -847,20 +847,20 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 					continue; // Skip TargetRTS internal events such as rtBound and rtUnbound
 
 				if (!firstEvent)
-					strResult.append(&quot;, &quot;);
+					strResult.append(", ");
 				firstEvent = false;
 
-				strResult.append(&quot;\&quot;&quot;);
+				strResult.append("\"");
 				strResult.append(signalDescriptor->name);
-				strResult.append(&quot;\&quot;&quot;);
+				strResult.append("\"");
 			}
 
-			strResult.append(&quot;] }&quot;);
+			strResult.append("] }");
 
 		}
-		strResult.append(&quot;]&quot;);
+		strResult.append("]");
 		return strResult;
-	</body>
+	]]></body>
       </ownedBehavior>
       <ownedOperation xmi:id="_5rH6Q-5TEeitL-zKjjNp2A" name="onRequestReceived">
         <ownedParameter xmi:id="_5rH6RO5TEeitL-zKjjNp2A" name="return" direction="return">
@@ -929,8 +929,8 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
       </ownedAttribute>
       <ownedAttribute xmi:id="_btFcUPGMEeiGPObbQ5S9rA" name="remoteHost" visibility="public" isStatic="true">
         <defaultValue xmi:type="uml:OpaqueExpression" xmi:id="_nQigwPOiEeiMwvLnGvgCsg" name="">
-          <language>C++</language>
-          <body>&quot;127.0.0.1&quot;</body>
+          <language><![CDATA[C++]]></language>
+          <body><![CDATA["127.0.0.1"]]></body>
         </defaultValue>
       </ownedAttribute>
       <ownedAttribute xmi:id="_B1wdwM8OEemd-cvOi0spQQ" name="logToStdOut" visibility="public" isStatic="true">
@@ -1042,9 +1042,198 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
   <Default:DefaultLanguage xmi:id="_n2PY0O5SEeitL-zKjjNp2A" base_Package="_n2OxwO5SEeitL-zKjjNp2A" defaultLanguage="C++"/>
   <UMLRealTime:Capsule xmi:id="_5rMywO5TEeitL-zKjjNp2A" base_Class="_5rHTMO5TEeitL-zKjjNp2A"/>
   <CppPropertySets:GeneralCapsuleProperties xmi:id="_5rMywe5TEeitL-zKjjNp2A" base_Class="_5rHTMO5TEeitL-zKjjNp2A">
-    <headerPreface xmi:id="_5rMywu5TEeitL-zKjjNp2A" body="#include &lt;string>&#xA;#include &quot;../src/include/RTIOMonitor.h&quot;&#xA;#include &lt;RTTcpSocket.h>&#xA;class RTIOMonitor;"/>
-    <implementationPreface xmi:id="_5rMyw-5TEeitL-zKjjNp2A" body="&#xD;&#xA;#include &lt;iostream>&#xD;&#xA;#include &lt;sstream>&#xD;&#xA;#include &lt;chrono>&#xD;&#xA;#include &lt;thread>&#xD;&#xA;#include &lt;mutex>&#xD;&#xA;#include &lt;condition_variable>&#xD;&#xA;#include &lt;RTUnknownObject.h>&#xD;&#xA;#include &lt;RTDynamicStringOutBuffer.h>&#xD;&#xA;#include &lt;RTJsonResult.h>&#xD;&#xA;#include &lt;RTJsonParser.h>&#xD;&#xA;#include &lt;RTJsonEncoding.h>&#xD;&#xA;&#xD;&#xA;std::string&amp; stringify(std::string&amp; s) {&#xD;&#xA;&#x9;std::string quote = &quot;\&quot;&quot;;&#xD;&#xA;&#x9;std::string escaped = &quot;\\\&quot;&quot;;&#xD;&#xA;&#x9;for(size_t pos = 0; (pos = s.find(quote, pos)) != std::string::npos; pos += escaped.size())&#xD;&#xA;&#x9;&#x9;s.replace(pos, quote.size(), escaped);&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;s.insert(0, quote);&#xD;&#xA;&#x9;s.insert(s.size(), quote);&#xD;&#xA;&#x9;return s;&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Represents an active connection to the local TCP server&#xD;&#xA;class LocalServerConnection : public ITCPConnection&#xD;&#xA;{&#xD;&#xA;&#x9;TCPServer_Actor&amp; capsuleInst;&#xD;&#xA;&#x9;const std::string NL = &quot;\n&quot;;&#xD;&#xA;&#x9;std::string sendReply;&#xD;&#xA;&#x9;std::thread threadObj;&#xD;&#xA;&#x9;RTTcpSocket listenSock;&#xD;&#xA;&#x9;RTIOMonitor * ioMonitor;&#xD;&#xA;&#x9;std::condition_variable cv;&#xD;&#xA;&#x9;bool hasReplied;&#xD;&#xA;public:&#xD;&#xA;&#x9;LocalServerConnection(TCPServer_Actor&amp; context)&#xD;&#xA;&#x9;&#x9;:capsuleInst(context),&#xD;&#xA;&#x9;&#x9;hasReplied(false)&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;sendReply.clear();&#xD;&#xA;&#x9;&#x9;ioMonitor = new RTIOMonitor;&#xD;&#xA;&#x9;&#x9;listenSock.registerWith(ioMonitor);&#xD;&#xA;&#x9;&#x9;if (listenSock.create() &amp;&amp; listenSock.listen(capsuleInst.config.port))&#xD;&#xA;&#x9;&#x9;{&#xD;&#xA;&#x9;&#x9;&#x9;threadObj = std::thread(&amp;LocalServerConnection::runThread, this);&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;else&#xD;&#xA;&#x9;&#x9;{&#xD;&#xA;&#x9;&#x9;&#x9;listenSock.close();&#xD;&#xA;&#x9;&#x9;&#x9;delete ioMonitor;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;void runThread()&#xD;&#xA;&#x9;{&#xD;&#xA;&#x9;&#x9;while (1) {&#xD;&#xA;&#x9;&#x9;&#x9;RTTcpSocket clientSock;&#xD;&#xA;&#x9;&#x9;&#x9;RTIOMonitor *ioMonitorClient = new RTIOMonitor;&#xD;&#xA;&#x9;&#x9;&#x9;clientSock.registerWith(ioMonitorClient);&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;static const RTTimespec awhile(5L, 0L);&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;while (!ioMonitor->wait(&amp;awhile)) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;std::this_thread::sleep_for(std::chrono::seconds(1));&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;if (!clientSock.acceptFrom(listenSock)) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;std::cerr &lt;&lt; &quot;TCP accept socket is failed &quot; &lt;&lt; std::endl;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;clientSock.close();&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;delete ioMonitorClient;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;return;&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;if (capsuleInst.config.logToStdOut)&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;std::cout &lt;&lt; &quot;TCP request received &quot; &lt;&lt; std::endl;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;while (!ioMonitorClient->wait(&amp;awhile)) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;std::this_thread::sleep_for(std::chrono::seconds(1));&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;char buffer[1024];&#xD;&#xA;&#x9;&#x9;&#x9;int n;&#xD;&#xA;&#x9;&#x9;&#x9;std::string received;&#xD;&#xA;&#x9;&#x9;&#x9;do {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;RTMemoryUtil::memset(buffer, 0, sizeof(buffer));&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;n = clientSock.read(buffer, 1024);&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;if (n > 0)&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;received.append(buffer, n);&#xD;&#xA;&#x9;&#x9;&#x9;} while (n > 0);&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;std::pair&lt;std::string, LocalServerConnection*> *data =&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;new std::pair&lt;std::string, LocalServerConnection*>(received,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;this);&#xD;&#xA;&#x9;&#x9;&#x9;capsuleInst.external.dataPushBack(data);&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;if (capsuleInst.external.raise() == 0) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;// The capsule is not ready to receive the external event. Wait a little and try 2 more times before giving up.&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;std::this_thread::sleep_for(std::chrono::milliseconds(500));&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;if (capsuleInst.external.raise() == 0) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;std::this_thread::sleep_for(std::chrono::milliseconds(500));&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;if (capsuleInst.external.raise() == 0) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;replyStatus(Status::Error,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&quot;Failed to notify TCPServer capsule about received message after 3 attempts. Message is lost!&quot;);&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;// Need to remove the data object since this LocalServerConnection soon will become invalid&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;capsuleInst.external.dataDelete(data);&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;clientSock.close();&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;delete ioMonitorClient;&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;return;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#xD;&#xA;#ifdef _DEBUG&#xD;&#xA;&#x9;&#x9;&#x9;long sleepDuration = 1000000;&#xD;&#xA;#else&#xD;&#xA;&#x9;&#x9;&#x9;long sleepDuration = capsuleInst.config.maxWaitForReply;&#xD;&#xA;#endif&#xD;&#xA;&#x9;&#x9;&#x9;// Keep the server connection open until a reply is received (or a timeout occurs).&#xD;&#xA;&#x9;&#x9;&#x9;std::mutex m;&#xD;&#xA;&#x9;&#x9;&#x9;std::unique_lock&lt;std::mutex> ulck(m);&#xD;&#xA;&#x9;&#x9;&#x9;while (cv.wait_for(ulck, std::chrono::milliseconds(sleepDuration)) == std::cv_status::timeout) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;std::ostringstream s;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;s &lt;&lt; &quot;No response from RT application within &quot; &lt;&lt; sleepDuration &lt;&lt; &quot; ms&quot;;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;replyStatus(Status::Error, s.str());&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;if (!sendReply.empty()) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;clientSock.write(sendReply.c_str(), sendReply.length());&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;clientSock.write(NL.c_str(), NL.length());&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;sendReply.clear();&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;hasReplied = false;&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;clientSock.close();&#xD;&#xA;&#x9;&#x9;&#x9;delete ioMonitorClient;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;virtual void reply(const std::string&amp; msg) {&#xD;&#xA;&#x9;&#x9;if (hasReplied) {&#xD;&#xA;&#x9;&#x9;&#x9;std::cout &lt;&lt; &quot;Warning: Multiple reply detected for request. Message: &quot; &lt;&lt; msg &lt;&lt; std::endl;&#xD;&#xA;&#x9;&#x9;&#x9;return;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;sendReply = msg;&#xD;&#xA;&#x9;&#x9;cv.notify_one();&#xD;&#xA;&#x9;&#x9;hasReplied = true;&#xD;&#xA;&#x9;}&#x9;&#xD;&#xA;&#xD;&#xA;&#x9;virtual void replyStatus(Status status, const std::string&amp; msg, const std::string&amp; result) {&#xD;&#xA;&#x9;&#x9;std::string s = &quot;ok&quot;;&#xD;&#xA;&#x9;&#x9;if (status == Status::Error) {&#xD;&#xA;&#x9;&#x9;&#x9;s = &quot;error&quot;;&#xD;&#xA;&#x9;&#x9;&#x9;std::cout &lt;&lt; s &lt;&lt; &quot;: &quot; &lt;&lt; msg &lt;&lt; std::endl;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;std::string str = &quot;{\&quot;status\&quot;:\&quot;&quot; + s + &quot;\&quot;, \&quot;msg\&quot;:\&quot;&quot; + msg + &quot;\&quot;&quot;;&#xD;&#xA;&#x9;&#x9;if (!result.empty()) {&#xD;&#xA;&#x9;&#x9;&#x9;str.append(&quot;, \&quot;result\&quot;: &quot;);&#xD;&#xA;&#x9;&#x9;&#x9;str.append(result);&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;str.append(&quot;}&quot;);&#xD;&#xA;&#x9;&#x9;reply(str);&#xD;&#xA;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;virtual void replyStatus(Status status, const std::string&amp; msg) {&#xD;&#xA;&#x9;&#x9;replyStatus(status, msg, &quot;&quot;);&#xD;&#xA;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;virtual void replyHTTPStatus(Status status, const std::string&amp; result) {&#xD;&#xA;&#x9;&#x9;std::string str = &quot;HTTP/1.1 200 OK\n&quot;;&#xD;&#xA;&#x9;&#x9;str.append(&quot;Content-Type: application/json\n&quot;);&#xD;&#xA;&#x9;&#x9;str.append(&quot;Access-Control-Allow-Origin: *\n&quot;);&#xD;&#xA;&#x9;&#x9;str.append(&quot;Content-Length: &quot; + std::to_string(result.size()));&#xD;&#xA;&#x9;&#x9;str.append(&quot;\n\n&quot;);&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;str.append(result);&#xD;&#xA;&#x9;&#x9;reply(str);&#xD;&#xA;&#x9;}&#xD;&#xA;&#xD;&#xA;};&#xD;&#xA;"/>
-    <publicDeclarations xmi:id="_5rMyxO5TEeitL-zKjjNp2A" body="friend class LocalServerConnection;"/>
+    <headerPreface xmi:id="_5rMywu5TEeitL-zKjjNp2A">
+      <body><![CDATA[#include <string>
+#include "../src/include/RTIOMonitor.h"
+#include <RTTcpSocket.h>
+class RTIOMonitor;]]></body>
+    </headerPreface>
+    <implementationPreface xmi:id="_5rMyw-5TEeitL-zKjjNp2A">
+      <body><![CDATA[
+#include <iostream>
+#include <sstream>
+#include <chrono>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <RTUnknownObject.h>
+#include <RTDynamicStringOutBuffer.h>
+#include <RTJsonResult.h>
+#include <RTJsonParser.h>
+#include <RTJsonEncoding.h>
+
+std::string& stringify(std::string& s) {
+	std::string quote = "\"";
+	std::string escaped = "\\\"";
+	for(size_t pos = 0; (pos = s.find(quote, pos)) != std::string::npos; pos += escaped.size())
+		s.replace(pos, quote.size(), escaped);
+	
+	s.insert(0, quote);
+	s.insert(s.size(), quote);
+	return s;
+}
+
+// Represents an active connection to the local TCP server
+class LocalServerConnection : public ITCPConnection
+{
+	TCPServer_Actor& capsuleInst;
+	const std::string NL = "\n";
+	std::string sendReply;
+	std::thread threadObj;
+	RTTcpSocket listenSock;
+	RTIOMonitor * ioMonitor;
+	std::condition_variable cv;
+	bool hasReplied;
+public:
+	LocalServerConnection(TCPServer_Actor& context)
+		:capsuleInst(context),
+		hasReplied(false)
+	{
+		sendReply.clear();
+		ioMonitor = new RTIOMonitor;
+		listenSock.registerWith(ioMonitor);
+		if (listenSock.create() && listenSock.listen(capsuleInst.config.port))
+		{
+			threadObj = std::thread(&LocalServerConnection::runThread, this);
+		}
+		else
+		{
+			listenSock.close();
+			delete ioMonitor;
+		}
+	}
+
+	void runThread()
+	{
+		while (1) {
+			RTTcpSocket clientSock;
+			RTIOMonitor *ioMonitorClient = new RTIOMonitor;
+			clientSock.registerWith(ioMonitorClient);
+
+			static const RTTimespec awhile(5L, 0L);
+
+			while (!ioMonitor->wait(&awhile)) {
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+			}
+
+			if (!clientSock.acceptFrom(listenSock)) {
+				std::cerr << "TCP accept socket is failed " << std::endl;
+				clientSock.close();
+				delete ioMonitorClient;
+				return;
+			}
+
+			if (capsuleInst.config.logToStdOut)
+				std::cout << "TCP request received " << std::endl;
+
+			while (!ioMonitorClient->wait(&awhile)) {
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+			}
+			char buffer[1024];
+			int n;
+			std::string received;
+			do {
+				RTMemoryUtil::memset(buffer, 0, sizeof(buffer));
+				n = clientSock.read(buffer, 1024);
+				if (n > 0)
+					received.append(buffer, n);
+			} while (n > 0);
+
+			std::pair<std::string, LocalServerConnection*> *data =
+					new std::pair<std::string, LocalServerConnection*>(received,
+							this);
+			capsuleInst.external.dataPushBack(data);
+
+			if (capsuleInst.external.raise() == 0) {
+				// The capsule is not ready to receive the external event. Wait a little and try 2 more times before giving up.
+				std::this_thread::sleep_for(std::chrono::milliseconds(500));
+				if (capsuleInst.external.raise() == 0) {
+					std::this_thread::sleep_for(std::chrono::milliseconds(500));
+					if (capsuleInst.external.raise() == 0) {
+						replyStatus(Status::Error,
+								"Failed to notify TCPServer capsule about received message after 3 attempts. Message is lost!");
+						// Need to remove the data object since this LocalServerConnection soon will become invalid						
+						capsuleInst.external.dataDelete(data);
+
+						clientSock.close();
+						delete ioMonitorClient;
+
+						return;
+					}
+				}
+			}
+
+#ifdef _DEBUG
+			long sleepDuration = 1000000;
+#else
+			long sleepDuration = capsuleInst.config.maxWaitForReply;
+#endif
+			// Keep the server connection open until a reply is received (or a timeout occurs).
+			std::mutex m;
+			std::unique_lock<std::mutex> ulck(m);
+			while (cv.wait_for(ulck, std::chrono::milliseconds(sleepDuration)) == std::cv_status::timeout) {
+				std::ostringstream s;
+				s << "No response from RT application within " << sleepDuration << " ms";
+				replyStatus(Status::Error, s.str());
+			}
+
+			if (!sendReply.empty()) {
+				clientSock.write(sendReply.c_str(), sendReply.length());
+				clientSock.write(NL.c_str(), NL.length());
+				sendReply.clear();
+				hasReplied = false;
+			}
+			clientSock.close();
+			delete ioMonitorClient;
+		}
+	}
+
+	virtual void reply(const std::string& msg) {
+		if (hasReplied) {
+			std::cout << "Warning: Multiple reply detected for request. Message: " << msg << std::endl;
+			return;
+		}
+		sendReply = msg;
+		cv.notify_one();
+		hasReplied = true;
+	}	
+
+	virtual void replyStatus(Status status, const std::string& msg, const std::string& result) {
+		std::string s = "ok";
+		if (status == Status::Error) {
+			s = "error";
+			std::cout << s << ": " << msg << std::endl;
+		}
+
+		std::string str = "{\"status\":\"" + s + "\", \"msg\":\"" + msg + "\"";
+		if (!result.empty()) {
+			str.append(", \"result\": ");
+			str.append(result);
+		}
+		str.append("}");
+		reply(str);
+	}
+
+	virtual void replyStatus(Status status, const std::string& msg) {
+		replyStatus(status, msg, "");
+	}
+
+	virtual void replyHTTPStatus(Status status, const std::string& result) {
+		std::string str = "HTTP/1.1 200 OK\n";
+		str.append("Content-Type: application/json\n");
+		str.append("Access-Control-Allow-Origin: *\n");
+		str.append("Content-Length: " + std::to_string(result.size()));
+		str.append("\n\n");		
+		str.append(result);
+		reply(str);
+	}
+
+};
+]]></body>
+    </implementationPreface>
+    <publicDeclarations xmi:id="_5rMyxO5TEeitL-zKjjNp2A">
+      <body><![CDATA[friend class LocalServerConnection;]]></body>
+    </publicDeclarations>
   </CppPropertySets:GeneralCapsuleProperties>
   <UMLRealTime:RTPort xmi:id="_5rNZ0e5TEeitL-zKjjNp2A" isWired="false" base_Port="_5rHTO-5TEeitL-zKjjNp2A"/>
   <UMLRealTime:RTPort xmi:id="_5rNZ0u5TEeitL-zKjjNp2A" base_Port="_5rHTPO5TEeitL-zKjjNp2A"/>
@@ -1057,7 +1246,9 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
   <CppPropertySets:GeneralParameterProperties xmi:id="_5rOA4e5TEeitL-zKjjNp2A" base_Parameter="_5rH6S-5TEeitL-zKjjNp2A" nativeType="ITCPConnection*"/>
   <Standard:Auxiliary xmi:id="_5rOn8O5TEeitL-zKjjNp2A" base_Class="_5rKWgO5TEeitL-zKjjNp2A"/>
   <CppPropertySets:GeneralInterfaceProperties xmi:id="_Vq8JMO5WEeitL-zKjjNp2A" base_Interface="_Vq7iIO5WEeitL-zKjjNp2A">
-    <headerPreface xmi:id="_Vq8JMe5WEeitL-zKjjNp2A" body="#include &lt;string>"/>
+    <headerPreface xmi:id="_Vq8JMe5WEeitL-zKjjNp2A">
+      <body><![CDATA[#include <string>]]></body>
+    </headerPreface>
   </CppPropertySets:GeneralInterfaceProperties>
   <CppPropertySets:GeneralParameterProperties xmi:id="_Vq8JMu5WEeitL-zKjjNp2A" base_Parameter="_Vq7iIu5WEeitL-zKjjNp2A" nativeType="const std::string&amp;"/>
   <UMLRealTime:ProtocolContainer xmi:id="_ZJ5t8O5XEeitL-zKjjNp2A" base_Package="_ZJ5G4O5XEeitL-zKjjNp2A"/>
@@ -1069,7 +1260,9 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
   <CppPropertySets:GeneralOperationProperties xmi:id="_lBm2UPF5EeiGPObbQ5S9rA" base_Operation="_j8WecPF5EeiGPObbQ5S9rA" polymorphic="true"/>
   <CppPropertySets:GeneralAttributeProperties xmi:id="_d90I0PGMEeiGPObbQ5S9rA" base_Property="_btFcUPGMEeiGPObbQ5S9rA" nativeType="std::string"/>
   <CppPropertySets:GeneralClassProperties xmi:id="_s-LUMPGNEeiGPObbQ5S9rA" base_Class="_5rKWgO5TEeitL-zKjjNp2A">
-    <headerPreface xmi:id="_s-NJYPGNEeiGPObbQ5S9rA" body="#include &lt;string>"/>
+    <headerPreface xmi:id="_s-NJYPGNEeiGPObbQ5S9rA">
+      <body><![CDATA[#include <string>]]></body>
+    </headerPreface>
   </CppPropertySets:GeneralClassProperties>
   <CppPropertySets:GeneralOperationProperties xmi:id="_gi1wsPGUEeiGPObbQ5S9rA" base_Operation="_dbgzYPGUEeiGPObbQ5S9rA" polymorphic="true"/>
   <CppPropertySets:GeneralParameterProperties xmi:id="_YPeFkHxrEemQvv1wPLSA6g" base_Parameter="_YPbpUXxrEemQvv1wPLSA6g" nativeType="const std::string&amp;"/>
