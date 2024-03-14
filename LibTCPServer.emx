@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--xtools2_universal_type_manager-->
-<!--IBM Rational Software Architect RealTime Edition 11.3.0-->
+<!--DevOps Model RealTime 12.0.1-->
 <?com.ibm.xtools.emf.core.signature <signature id="com.ibm.xtools.uml.msl.model" version="7.0.0"><feature description="" name="com.ibm.xtools.ruml.feature" url="" version="7.0.0"/></signature>?>
 <?com.ibm.xtools.emf.core.signature <signature id="com.ibm.xtools.mmi.ui.signatures.diagram" version="7.0.0"><feature description="" name="Rational Modeling Platform (com.ibm.xtools.rmp)" url="" version="7.0.0"/></signature>?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:CppPropertySets="http:///schemas/CppPropertySets/_5TG7AMk4EeO2m9WtkWjeeQ/67" xmlns:Default="http:///schemas/Default/_fNm3AAqoEd6-N_NOT9vsCA/2" xmlns:Standard="http://www.eclipse.org/uml2/schemas/Standard/1" xmlns:UMLRealTime="http:///schemas/UMLRealTime/_3TUzoHq6Ed2hSeAAWZznoA/119" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmlns:umlnotation="http://www.ibm.com/xtools/1.5.3/Umlnotation" xsi:schemaLocation="http:///schemas/CppPropertySets/_5TG7AMk4EeO2m9WtkWjeeQ/67 pathmap://CPP_LANGUAGE_PROFILE/CppPropertySets.epx#_5TYAwMk4EeO2m9WtkWjeeQ?CppPropertySets/CppPropertySets? http:///schemas/Default/_fNm3AAqoEd6-N_NOT9vsCA/2 pathmap://UML2_MSL_PROFILES/Default.epx#_fNwoAAqoEd6-N_NOT9vsCA?Default/Default? http://www.eclipse.org/uml2/schemas/Standard/1 pathmap://UML_PROFILES/Standard.profile.uml#_yzU58YinEdqtvbnfB2L_5w http:///schemas/UMLRealTime/_3TUzoHq6Ed2hSeAAWZznoA/119 pathmap://RT_PROPERTIES/UMLRealTime.epx#_3TUzoXq6Ed2hSeAAWZznoA?UMLRealTime/UMLRealTime?">
@@ -581,100 +581,103 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
         <body><![CDATA[// Called when an outgoing message arrives at the TCPServer capsule part.
 // JSON encode it and send the encoding to the specified remote host.
 
-if (config.remoteHost.empty() || config.remotePort == 0)
-	return; // Sending of outgoing messages is disabled
+	if (config.remoteHost.empty() || config.remotePort == 0)
+		return; // Sending of outgoing messages is disabled
 
-const RTMessage* msg = getMsg();
-	
+	const RTMessage *msg = getMsg();
+
 //RTJsonEncoding coding(&buf);
 //coding.put_msg(msg);
 //string str(buf.getString(), RTMemoryUtil::strlen(buf.getString()) - 1);
 
-std::string str = "{ \"event\" : \"";
-str.append(msg->getSignalName());
-str.append("\" ");
-
-const RTObject_class * type = msg->getType();
-const void* data = msg->getData();
-
-if (type != 0) {
-	str.append(", \"type\" : \"");
-	str.append(type->name());
+	std::string str = "{ \"event\" : \"";
+	str.append(msg->getSignalName());
 	str.append("\" ");
-}
-if (data != 0) {
-	RTDynamicStringOutBuffer buf;		
-	RTAsciiEncoding coding(&buf);
-	coding.put(data, type);	
-	str.append(", \"data\" : \"");
-	str.append(buf.getString());
-	str.append("\" ");
-}
+
+	const RTObject_class *type = msg->getType();
+	const void *data = msg->getData();
+
+	if (type != 0) {
+		str.append(", \"type\" : \"");
+		str.append(type->name());
+		str.append("\" ");
+	}
+	if (data != 0) {
+		RTDynamicStringOutBuffer buf;
+		RTAsciiEncoding coding(&buf);
+		coding.put(data, type);
+		str.append(", \"data\" : \"");
+		str.append(buf.getString());
+		str.append("\" ");
+	}
 
 // Make the JSON format identical to 'sendEvent' or 'invokeEvent' objects for incoming events
 // so it becomes possible to build a distributed Model RealTime application where one
 // executable can consume the output of another executable.
-str.append(", \"command\" : \"");
-if (msg->priority == System) {
-	// Invoked event
-	str.append("invokeEvent\"");
-}
-else {
-	// Sent event
-	std::string priority = "General";
-	if (msg->priority == Panic)
-		priority = "Panic";
-	else if (msg->priority == High)
-		priority = "High";
-	else if (msg->priority == Low)
-		priority = "Low";
-	else if (msg->priority == Background)
-		priority = "Background";
+	str.append(", \"command\" : \"");
+	if (msg->priority == System) {
+		// Invoked event
+		str.append("invokeEvent\"");
+	} else {
+		// Sent event
+		std::string priority = "General";
+		if (msg->priority == Panic)
+			priority = "Panic";
+		else if (msg->priority == High)
+			priority = "High";
+		else if (msg->priority == Low)
+			priority = "Low";
+		else if (msg->priority == Background)
+			priority = "Background";
 
-	str.append("sendEvent\", \"priority\" : \"");
-	str.append(priority);
-	str.append("\"");
-}
+		str.append("sendEvent\", \"priority\" : \"");
+		str.append(priority);
+		str.append("\"");
+	}
 
 // Append port and portIndex
-RTProtocol * port = msg->sap();
-if( port != 0 && port->getName() != 0) {
-	str.append(", \"port\" : \"");
-	str.append(port->getName());
-	str.append("\", \"portIndex\" : ");
-	str.append(std::to_string(msg->sapIndex0()));
-}
-str.append("}");
+	RTProtocol *port = msg->sap();
+	if (port != 0 && port->getName() != 0) {
+		str.append(", \"port\" : \"");
+		str.append(port->getName());
+		str.append("\", \"portIndex\" : ");
+		str.append(std::to_string(msg->sapIndex0()));
+	}
+	str.append("}");
 
-if (config.logToStdOut)
-	std::cout << "Out message: " << str << std::endl;
+	if (config.logToStdOut)
+		std::cout << "Out message: " << str << std::endl;
 
 	bool writeSuccess = false;
 
 	RTTcpSocket tcp;
 	RTIOMonitor *ioM = new RTIOMonitor();
 	tcp.registerWith(ioM);
-	if(!tcp.create()) {
-		std::cerr << "TCP socket creation is failed."<< std::endl;
-		delete ioM;
+	if (!tcp.create()) {
+		std::cerr << "TCP socket creation is failed." << std::endl;
 		tcp.close();
+		delete ioM;
 		return;
 	}
-	if(!tcp.connect(static_cast<const char*>(config.remoteHost.c_str()), static_cast<int>(config.remotePort))) {
-		std::cerr << "Unable to connect to " << config.remoteHost <<" on port " << config.remotePort << std::endl;
+	if (!tcp.connect(static_cast<const char*>(config.remoteHost.c_str()),
+			static_cast<int>(config.remotePort))) {
+		std::cerr << "Unable to connect to " << config.remoteHost << " on port "
+				<< config.remotePort << std::endl;
 		return;
 	}
-	if(tcp.write(static_cast<const char*>(str.c_str()), static_cast<int>(str.length())) < 0 ) {
-		std::cerr << "Error: Failed to write to socket for " << config.remoteHost <<" on port " << config.remotePort <<std::endl;
+	if (tcp.write(static_cast<const char*>(str.c_str()),
+			static_cast<int>(str.length())) < 0) {
+		std::cerr << "Error: Failed to write to socket for "
+				<< config.remoteHost << " on port " << config.remotePort
+				<< std::endl;
 		return;
 	}
 	writeSuccess = true;
 
-
-	static const RTTimespec awhile( 1L, 0L );
-	while(!ioM->wait( &awhile)) {
+	static const RTTimespec awhile(1L, 0L);
+	while (!ioM->wait(&awhile)) {
 		std::this_thread::sleep_for(std::chrono::seconds(1));
-		std::cout << "wait for out message: " << std::endl;
+		std::cout << "Waiting for out message... " << std::endl;
 	}
 
 	// Read response, if any
@@ -686,7 +689,7 @@ if (config.logToStdOut)
 		n = tcp.read(buffer, 1024);
 		if (n > 0)
 			received.append(buffer, n);
-	}while (n > 0);
+	} while (n > 0);
 
 	tcp.close();
 
@@ -1083,53 +1086,50 @@ public:
 		}
 		else
 		{
-			delete ioMonitor;
 			listenSock.close();
+			delete ioMonitor;
 		}
 	}
 
 	void runThread()
 	{
-		while(1)
-		{
+		while (1) {
 			RTTcpSocket clientSock;
 			RTIOMonitor *ioMonitorClient = new RTIOMonitor;
 			clientSock.registerWith(ioMonitorClient);
 
-			static const RTTimespec awhile( 5L, 0L );
+			static const RTTimespec awhile(5L, 0L);
 
-			while(!ioMonitor->wait( &awhile))
-			{
+			while (!ioMonitor->wait(&awhile)) {
 				std::this_thread::sleep_for(std::chrono::seconds(1));
 			}
 
-			if(!clientSock.acceptFrom(listenSock))
-			{
-				std::cerr << "TCP accept socket is failed " <<std::endl;
-				delete ioMonitorClient;
+			if (!clientSock.acceptFrom(listenSock)) {
+				std::cerr << "TCP accept socket is failed " << std::endl;
 				clientSock.close();
+				delete ioMonitorClient;
 				return;
 			}
 
 			if (capsuleInst.config.logToStdOut)
-				std::cout << "TCP request received "<< std::endl;
+				std::cout << "TCP request received " << std::endl;
 
-			while(!ioMonitorClient->wait( &awhile))
-			{
+			while (!ioMonitorClient->wait(&awhile)) {
 				std::this_thread::sleep_for(std::chrono::seconds(1));
 			}
 			char buffer[1024];
 			int n;
 			std::string received;
-			do
-			{
+			do {
 				RTMemoryUtil::memset(buffer, 0, sizeof(buffer));
-				n = clientSock.read( buffer, 1024);
+				n = clientSock.read(buffer, 1024);
 				if (n > 0)
 					received.append(buffer, n);
-			}while(n > 0);
+			} while (n > 0);
 
-			std::pair<std::string, LocalServerConnection*>* data = new std::pair<std::string, LocalServerConnection*>(received, this);
+			std::pair<std::string, LocalServerConnection*> *data =
+					new std::pair<std::string, LocalServerConnection*>(received,
+							this);
 			capsuleInst.external.dataPushBack(data);
 
 			if (capsuleInst.external.raise() == 0) {
@@ -1138,16 +1138,17 @@ public:
 				if (capsuleInst.external.raise() == 0) {
 					std::this_thread::sleep_for(std::chrono::milliseconds(500));
 					if (capsuleInst.external.raise() == 0) {
-						replyStatus(Status::Error, "Failed to notify TCPServer capsule about received message after 3 attempts. Message is lost!");
+						replyStatus(Status::Error,
+								"Failed to notify TCPServer capsule about received message after 3 attempts. Message is lost!");
 						// Need to remove the data object since this LocalServerConnection soon will become invalid						
 						capsuleInst.external.dataDelete(data);
 
-						delete ioMonitorClient;
 						clientSock.close();
+						delete ioMonitorClient;
 
-						return;								
+						return;
 					}
-				}					
+				}
 			}
 
 #ifdef _DEBUG
@@ -1164,14 +1165,14 @@ public:
 				replyStatus(Status::Error, s.str());
 			}
 
-			if(!sendReply.empty()) {
-				clientSock.write( sendReply.c_str(), sendReply.length());
-				clientSock.write( NL.c_str(), NL.length());
+			if (!sendReply.empty()) {
+				clientSock.write(sendReply.c_str(), sendReply.length());
+				clientSock.write(NL.c_str(), NL.length());
 				sendReply.clear();
 				hasReplied = false;
 			}
-			delete ioMonitorClient;
 			clientSock.close();
+			delete ioMonitorClient;
 		}
 	}
 
