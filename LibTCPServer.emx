@@ -607,9 +607,10 @@ LocalServerConnection *lsc = new LocalServerConnection(*this);
 		RTDynamicStringOutBuffer buf;
 		RTAsciiEncoding coding(&buf);
 		coding.put(data, type);
-		str.append(", \"data\" : \"");
-		str.append(buf.getString());
-		str.append("\" ");
+		str.append(", \"data\" : ");
+		std::string data(buf.getString());
+		str.append(stringify(data));
+		str.append(" ");
 	}
 
 // Make the JSON format identical to 'sendEvent' or 'invokeEvent' objects for incoming events
@@ -1062,9 +1063,10 @@ class RTIOMonitor;]]></body>
 #include <RTJsonParser.h>
 #include <RTJsonEncoding.h>
 
+// Enclose string in double quotes, and escape with backslash any double quote it already contains
 std::string& stringify(std::string& s) {
-	std::string quote = "\"";
-	std::string escaped = "\\\"";
+	const std::string quote = "\"";
+	const std::string escaped = "\\\"";
 	for(size_t pos = 0; (pos = s.find(quote, pos)) != std::string::npos; pos += escaped.size())
 		s.replace(pos, quote.size(), escaped);
 	
