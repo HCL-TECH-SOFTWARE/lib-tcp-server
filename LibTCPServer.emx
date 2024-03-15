@@ -1128,9 +1128,9 @@ public:
 			if (capsuleInst.config.logToStdOut)
 				std::cout << "TCP request received " << std::endl;
 
-			while (!ioMonitorClient->wait(&awhile)) {
+			/*while (!ioMonitorClient->wait(&awhile)) {
 				std::this_thread::sleep_for(std::chrono::seconds(1));
-			}
+			}*/
 			char buffer[1024];
 			int n;
 			std::string received;
@@ -1173,23 +1173,39 @@ public:
 			// Keep the server connection open until a reply is received (or a timeout occurs).
 			std::mutex m;
 			std::unique_lock<std::mutex> ulck(m);
-			while (cv.wait_for(ulck, std::chrono::milliseconds(sleepDuration)) == std::cv_status::timeout) {
+			if (cv.wait_for(ulck, std::chrono::milliseconds(sleepDuration)) == std::cv_status::timeout) {
 				std::ostringstream s;
 				s << "No response from RT application within " << sleepDuration << " ms";
-				replyStatus(Status::Error, s.str());
+								
+				createStatusJSONMsg(Status::Error, s.str(), "", sendReply);				
 			}
 
 			if (!sendReply.empty()) {
 				clientSock.write(sendReply.c_str(), sendReply.length());
 				clientSock.write(NL.c_str(), NL.length());
-				sendReply.clear();
-				hasReplied = false;
+				sendReply.clear();				
 			}
+			hasReplied = false;
 			clientSock.close();
 			delete ioMonitorClient;
 		}
 	}
 
+	void createStatusJSONMsg(Status status, const std::string& msg, const std::string& result, std::string& str) {
+		std::string s = "ok";
+		if (status == Status::Error) {
+			s = "error";
+			std::cout << s << ": " << msg << std::endl;
+		}
+
+		str = "{\"status\":\"" + s + "\", \"msg\":\"" + msg + "\"";
+		if (!result.empty()) {
+			str.append(", \"result\": ");
+			str.append(result);
+		}
+		str.append("}");		
+	}
+	
 	virtual void reply(const std::string& msg) {
 		if (hasReplied) {
 			std::cout << "Warning: Multiple reply detected for request. Message: " << msg << std::endl;
@@ -1201,18 +1217,8 @@ public:
 	}	
 
 	virtual void replyStatus(Status status, const std::string& msg, const std::string& result) {
-		std::string s = "ok";
-		if (status == Status::Error) {
-			s = "error";
-			std::cout << s << ": " << msg << std::endl;
-		}
-
-		std::string str = "{\"status\":\"" + s + "\", \"msg\":\"" + msg + "\"";
-		if (!result.empty()) {
-			str.append(", \"result\": ");
-			str.append(result);
-		}
-		str.append("}");
+		std::string str;
+		createStatusJSONMsg(status, msg, result, str);
 		reply(str);
 	}
 
