@@ -16,7 +16,10 @@ It's possible to implement a custom handling of incoming messages, but the defau
 To implement your own custom handling of received messages, override the operation `TCPServer::handleReceivedMessageCustom()` and set the config property `defaultHandlingOfReceivedMessages` to false.
 
 ## Build the Library
-Add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application. Note that the TC `tcpServerLib.tcjs` is designed to be built as a prerequisite of an executable TC and it will automatically reuse some of the TC properties from that executable by calling `TCF.getTopTC()`. Here is an example of such a TC property:
+Add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application.
+
+Note that the TC `tcpServerLib.tcjs` is designed to be built only as a prerequisite of an executable TC. It will automatically reuse some of the TC properties from the top executable by calling `TCF.getTopTC()`. Here is an example of such a TC property:
+
 `
 tc.targetConfiguration = TCF.getTopTC().eval.targetConfiguration;
 `
@@ -24,6 +27,7 @@ tc.targetConfiguration = TCF.getTopTC().eval.targetConfiguration;
 TCP Server library uses the [POCO C++ libraries](https://pocoproject.org). Several prebuilt versions of the POCO library as well as include headers are available in installation under `rsa_rt/tcpserver/poco`. The C++ External Library TC `pocoLib.tcjs` defines include paths and necessary linked libraries. It is used as prerequisite to `tcpServerLib.tcjs` and will automatically add all necessary linked libraries to the executable.
 
 The location of the POCO library root folder is set in the 'aPocoLoc' property of `pocoLib.tcjs` TC (using the Code tab of the TC editor):
+
 `
 tc.aPocoLoc = '$(RSA_RT_HOME)/tcpserver/poco/';
 `
