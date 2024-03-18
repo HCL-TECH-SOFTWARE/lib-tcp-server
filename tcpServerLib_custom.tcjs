@@ -6,8 +6,8 @@ tc.prerequisites = [
     'platform:/resource/LibTcpServer/pocoLib.tcjs',
 ];
 tc.compilationMakeArguments = '';
-tc.compilationMakeType = TCF.getTopTC().eval.compilationMakeType;
-tc.compileArguments = '$(DEFINE_TAG)POCO_STATIC' + ( ! TCF.getTopTC().eval.targetConfiguration.contains('VisualC') ? ' -fexceptions' : '' );
+tc.compilationMakeType = MakeType.MS_nmake;
+tc.compileArguments = '$(DEFINE_TAG)POCO_STATIC'; // GNU compiler also needs '-fexceptions' flag
 tc.copyrightText = `
 /*******************************************************************************
  * (c) Copyright HCL Technologies Ltd. 2018, 2024.  MIT Licensed!
@@ -15,8 +15,7 @@ tc.copyrightText = `
 `;
 tc.createTargetProject = true;
 tc.libraryName = 'tcpServerLib$(LIB_EXT)';
-tc.targetConfiguration = TCF.getTopTC().eval.targetConfiguration;
+tc.targetConfiguration = 'WinT.x64-VisualC++-17.0';
 tc.targetProject = '/LibTCPServer_target';
-tc.targetServicesLibrary = TCF.getTopTC().eval.targetServicesLibrary;
 tc.type = CppTransformType.Library;
 tc.unitName = 'UnitName_TCPLib';
