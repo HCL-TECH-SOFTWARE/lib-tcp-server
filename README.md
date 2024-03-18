@@ -16,31 +16,21 @@ It's possible to implement a custom handling of incoming messages, but the defau
 To implement your own custom handling of received messages, override the operation `TCPServer::handleReceivedMessageCustom()` and set the config property `defaultHandlingOfReceivedMessages` to false.
 
 ## Build the Library
-Note that a couple of prebuilt versions of the library is included in the Model RealTime installation. You only need to build the library if none of these prebuilt versions match your selected target configuration (or if you want to debug or customize the library).
-
-The library uses the [POCO C++ libraries](https://pocoproject.org) and you must therefore first clone and build the [POCO GitHub repository](https://github.com/pocoproject/poco) for your particular platform.
-
-Add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application. Also specify the location of the POCO library root folder by setting the 'pocoLoc' property of your TC (using the Code tab of the TC editor). For example:
-
+Add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application. Note that the TC `tcpServerLib.tcjs` is designed to be built as a prerequisite of an executable TC and it will automatically reuse some of the TC properties from that executable by calling `TCF.getTopTC()`. Here is an example of such a TC property:
 `
-tc.pocoLoc = 'D:\\github\\poco';
+tc.targetConfiguration = TCF.getTopTC().eval.targetConfiguration;
 `
 
-Also tell the linker where to find the built POCO libraries. For example, for Visual Studio 64 bit set the following:
+TCP Server library uses the [POCO C++ libraries](https://pocoproject.org). Several prebuilt versions of the POCO library as well as include headers are available in installation under `rsa_rt/tcpserver/poco`. The C++ External Library TC `pocoLib.tcjs` defines include paths and necessary linked libraries. It is used as prerequisite to `tcpServerLib.tcjs` and will automatically add all necessary linked libraries to the executable.
 
+The location of the POCO library root folder is set in the 'aPocoLoc' property of `pocoLib.tcjs` TC (using the Code tab of the TC editor):
 `
-tc.linkArguments = '/MACHINE:X64 /LIBPATH:"' + tc.pocoLoc + '\\lib64"';
-`
-
-Finally, if you have built POCO as shared libraries remember to set the PATH variable (on Windows) or LD\_LIBRARY\_PATH (on Unix) to include the folder where they are located. For 64 bit builds the folder is called 'bin64' and is in the POCO root folder.
-
-Note that the TC `tcpServerLib.tcjs` is designed to be built as a prerequisite of an executable TC and will reuse some of the TC properties from that executable (using the topTC variable). Here is an example of such a TC property:
-
-` 
-tc.compileArguments = topTC.compileArguments || '$(DEBUG_TAG)';
+tc.aPocoLoc = '$(RSA_RT_HOME)/tcpserver/poco/';
 `
 
-If you want to be able to build the library TC directly (i.e. as a "top TC"), you should first modify these TC properties (essentially making sure that the value after the '||' is appropriate).
+List of linked libraries are defined in tc.libraries property of the `pocoLib.tcjs` TC based on the target configuration of the top executable.
+
+If you want to be able to build the library TC directly (i.e. as a "top TC"), you should use `tcpServerLib_custom.tcjs` and first modify the targetConfiguration and compiler settings.
 
 ## Configuration Properties
 Configuration properties are defined as static attributes of the `TCPServer_Config` class. If you don't want to change their default values in the library, you have to programmatically override the attribute values you want to change. You can do this by overriding the operation `init()` in your capsule that inherits from `TCPServer`. For example:
