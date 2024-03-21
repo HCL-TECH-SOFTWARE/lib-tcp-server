@@ -446,16 +446,7 @@ RTThread* serverThread = new RTThread(job, 20000 /* stack size */);
 	    	// The signal expects data and we have data. Decode the data from ASCII format.	    		    		   
 	    	RTMemoryInBuffer source (dataString.c_str(), dataString.size());
 	    	RTAsciiDecoding decoder(&source);
-			
-	    	/*
-	    	Var var_type = object->get("type");
-			if (var_type.isEmpty()) {
-				conn->replyStatus(ITCPConnection::Status::Error, "Type of event data must be specified.");
-				return;
-			}					
-	    	
-	    	RTJsonDecoding decoder(dataString, var_type.convert<string>());
-	    	*/
+				    	
 			if (decoder.get(&data, &dataType) == 0) {
 				conn->replyStatus(ITCPConnection::Status::Error, "Failed to decode data: " + dataString);
 				return;
@@ -545,9 +536,7 @@ RTThread* serverThread = new RTThread(job, 20000 /* stack size */);
 					strResult.append("{\"isValid\" : false}");
 					continue;
 				}
-				RTDynamicStringOutBuffer buf;			
-				//RTJsonEncoding coding(&buf);
-				//coding.put_msg(&replies[i]);
+				RTDynamicStringOutBuffer buf;				
 				strResult.append("{ \"event\" : \"");
 				strResult.append(replies[i].getSignalName());
 				strResult.append("\" ");
@@ -1148,7 +1137,8 @@ public:
 				received.append(buffer, n);
 		} while (n > 0);
 
-		std::cout << received << std::endl;
+		if (logToStdOut)
+			std::cout << received << std::endl;
 
 		if (received.empty()) {
 			reply(""); // Empty request - empty response
@@ -1175,19 +1165,7 @@ public:
 		}
 		
 		return true; // success
-	}	
-	/*
-	bool getHasReplied() {
-		std::lock_guard<std::mutex> guard(hasRepliedMutex);
-		
-		return hasReplied;
-	}
-	
-	void setHasReplied(bool r) {
-		std::lock_guard<std::mutex> guard(hasRepliedMutex);
-		
-		hasReplied = r;
-	}*/
+	}		
 	
 	void createStatusJSONMsg(Status status, const std::string& msg, const std::string& result, std::string& str) {
 		std::string s = "ok";
@@ -1258,6 +1236,7 @@ public:
 		RTIOMonitor* ioMonitor = new RTIOMonitor;
 		RTTcpSocket listenSock;
 		listenSock.registerWith(ioMonitor);
+		listenSock.setMaxPendingConnections(100);
 		if (!listenSock.create() || !listenSock.listen(port))
 		{
 			std::cerr << "Failed to create TCP accept socket" << std::endl;
