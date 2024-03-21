@@ -206,6 +206,11 @@
           <details xmi:id="_bYC7EuTpEe6Re8YX3cK64Q" key="cpp/initializerKind/org.eclipse.uml2.uml.Enumeration" value="brace"/>
         </eAnnotations>
       </ownedAttribute>
+      <ownedAttribute xmi:id="_7RTg8OeBEe6S2oclZuMFIg" name="serverThread" visibility="private">
+        <eAnnotations xmi:id="_7RYZcOeBEe6S2oclZuMFIg" source="com.hcl.xtools.properties">
+          <details xmi:id="_7RYZceeBEe6S2oclZuMFIg" key="cpp/initializerKind/org.eclipse.uml2.uml.Enumeration" value="brace"/>
+        </eAnnotations>
+      </ownedAttribute>
       <ownedBehavior xmi:type="uml:StateMachine" xmi:id="_5rHTPe5TEeitL-zKjjNp2A" name="State Machine">
         <eAnnotations xmi:id="_5rHTPu5TEeitL-zKjjNp2A" source="uml2.diagrams" references="_5rHTP-5TEeitL-zKjjNp2A">
           <contents xmi:type="umlnotation:UMLDiagram" xmi:id="_5rHTP-5TEeitL-zKjjNp2A" type="Statechart" element="_5rHTPe5TEeitL-zKjjNp2A" measurementUnit="Himetric">
@@ -300,7 +305,7 @@ init();
 
 // Launch server thread
 job = new ServerJob(this, config.port, config.logToStdOut, config.maxWaitForReply);
-RTThread* serverThread = new RTThread(job, 20000 /* stack size */);
+serverThread = new RTThread(job, 20000 /* stack size */);
 
 // set-up a server socket
 
@@ -344,6 +349,11 @@ RTThread* serverThread = new RTThread(job, 20000 /* stack size */);
             </trigger>
           </transition>
           <transition xmi:id="_dEMZQO5XEeitL-zKjjNp2A" name="stop" source="_5rHTee5TEeitL-zKjjNp2A" target="_bd0RUO5XEeitL-zKjjNp2A">
+            <effect xmi:type="uml:OpaqueBehavior" xmi:id="_NftnkOeBEe6S2oclZuMFIg" name="Effect">
+              <language><![CDATA[C++]]></language>
+              <body><![CDATA[delete serverThread;
+]]></body>
+            </effect>
             <trigger xmi:id="_5ngowO5XEeitL-zKjjNp2A" name="" event="_ZJ5G7e5XEeitL-zKjjNp2A" port="_5rHTPO5TEeitL-zKjjNp2A"/>
           </transition>
         </region>
@@ -1233,6 +1243,8 @@ public:
 	}
 
 	virtual void mainLoop( void ) override {
+		enter( RTJob::running );
+		
 		RTIOMonitor* ioMonitor = new RTIOMonitor;
 		RTTcpSocket listenSock;
 		listenSock.registerWith(ioMonitor);
@@ -1245,7 +1257,7 @@ public:
 			return;
 		}
 
-		while (true) {
+		do {
 			static const RTTimespec awhile(5L /* s */, 0L/*maxWaitForReply*1000*1000*/ /* ns */);
 
 			if (ioMonitor->wait(&awhile)) {
@@ -1275,180 +1287,28 @@ public:
 					delete lsc;
 				}
 			}
-		}
+		
+		} while (phase() != RTJob::finished);
 
+		while (!connections.empty()) {
+			LocalServerConnection* lsc = connections.front();
+			if (!lsc->hasReplied) {
+				lsc->replyStatus(ITCPConnection::Status::Error, "TCP server was stopped before the request was finished", "");
+			}
+			connections.pop_front();
+			delete lsc;
+		}
+		
+		delete this;
+			
 	}
 
 	virtual void kill( void ) override {
-
+		enter( RTJob::finished );		
 	}
 };
 
-/*
-
-// Represents an active connection to the local TCP server
-class LocalServerConnection : public ITCPConnection
-{
-	TCPServer_Actor& capsuleInst;
-	const std::string NL = "\n";
-	std::string sendReply;
-	std::thread threadObj;
-	RTTcpSocket listenSock;
-	RTIOMonitor * ioMonitor;
-	std::condition_variable cv;
-	bool hasReplied;
-public:
-	LocalServerConnection(TCPServer_Actor& context)
-		:capsuleInst(context),
-		hasReplied(false)
-	{
-		sendReply.clear();
-		ioMonitor = new RTIOMonitor;
-		listenSock.registerWith(ioMonitor);
-		if (listenSock.create() && listenSock.listen(capsuleInst.config.port))
-		{
-			threadObj = std::thread(&LocalServerConnection::runThread, this);
-		}
-		else
-		{
-			listenSock.close();
-			delete ioMonitor;
-		}
-	}
-
-	void runThread()
-	{
-		while (1) {
-			RTTcpSocket clientSock;
-			RTIOMonitor *ioMonitorClient = new RTIOMonitor;
-			clientSock.registerWith(ioMonitorClient);
-
-			static const RTTimespec awhile(5L, 0L);
-
-			while (!ioMonitor->wait(&awhile)) {
-				std::this_thread::sleep_for(std::chrono::seconds(1));
-			}
-
-			if (!clientSock.acceptFrom(listenSock)) {
-				std::cerr << "TCP accept socket is failed " << std::endl;
-				clientSock.close();
-				delete ioMonitorClient;
-				return;
-			}
-
-			if (capsuleInst.config.logToStdOut)
-				std::cout << "TCP request received " << std::endl;
-
-			while (!ioMonitorClient->wait(&awhile)) {
-				std::this_thread::sleep_for(std::chrono::seconds(1));
-			}
-			char buffer[1024];
-			int n;
-			std::string received;
-			do {
-				RTMemoryUtil::memset(buffer, 0, sizeof(buffer));
-				n = clientSock.read(buffer, 1024);
-				if (n > 0)
-					received.append(buffer, n);
-			} while (n > 0);
-
-			std::pair<std::string, LocalServerConnection*> *data =
-					new std::pair<std::string, LocalServerConnection*>(received,
-							this);
-			capsuleInst.external.dataPushBack(data);
-
-			if (capsuleInst.external.raise() == 0) {
-				// The capsule is not ready to receive the external event. Wait a little and try 2 more times before giving up.
-				std::this_thread::sleep_for(std::chrono::milliseconds(500));
-				if (capsuleInst.external.raise() == 0) {
-					std::this_thread::sleep_for(std::chrono::milliseconds(500));
-					if (capsuleInst.external.raise() == 0) {
-						replyStatus(Status::Error,
-								"Failed to notify TCPServer capsule about received message after 3 attempts. Message is lost!");
-						// Need to remove the data object since this LocalServerConnection soon will become invalid						
-						capsuleInst.external.dataDelete(data);
-
-						clientSock.close();
-						delete ioMonitorClient;
-
-						return;
-					}
-				}
-			}
-
-#ifdef _DEBUG
-			long sleepDuration = 1000000;
-#else
-			long sleepDuration = capsuleInst.config.maxWaitForReply;
-#endif
-			// Keep the server connection open until a reply is received (or a timeout occurs).
-			std::mutex m;
-			std::unique_lock<std::mutex> ulck(m);
-			if (cv.wait_for(ulck, std::chrono::milliseconds(sleepDuration)) == std::cv_status::timeout) {
-				std::ostringstream s;
-				s << "No response from RT application within " << sleepDuration << " ms";
-								
-				createStatusJSONMsg(Status::Error, s.str(), "", sendReply);				
-			}
-
-			if (!sendReply.empty()) {
-				clientSock.write(sendReply.c_str(), sendReply.length());
-				clientSock.write(NL.c_str(), NL.length());
-				sendReply.clear();				
-			}
-			hasReplied = false;
-			clientSock.close();
-			delete ioMonitorClient;
-		}
-	}
-
-	void createStatusJSONMsg(Status status, const std::string& msg, const std::string& result, std::string& str) {
-		std::string s = "ok";
-		if (status == Status::Error) {
-			s = "error";
-			std::cout << s << ": " << msg << std::endl;
-		}
-
-		str = "{\"status\":\"" + s + "\", \"msg\":\"" + msg + "\"";
-		if (!result.empty()) {
-			str.append(", \"result\": ");
-			str.append(result);
-		}
-		str.append("}");		
-	}
-	
-	virtual void reply(const std::string& msg) {
-		if (hasReplied) {
-			std::cout << "Warning: Multiple reply detected for request. Message: " << msg << std::endl;
-			return;
-		}
-		sendReply = msg;
-		cv.notify_one();
-		hasReplied = true;
-	}	
-
-	virtual void replyStatus(Status status, const std::string& msg, const std::string& result) {
-		std::string str;
-		createStatusJSONMsg(status, msg, result, str);
-		reply(str);
-	}
-
-	virtual void replyStatus(Status status, const std::string& msg) {
-		replyStatus(status, msg, "");
-	}
-
-	virtual void replyHTTPStatus(Status status, const std::string& result) {
-		std::string str = "HTTP/1.1 200 OK\n";
-		str.append("Content-Type: application/json\n");
-		str.append("Access-Control-Allow-Origin: *\n");
-		str.append("Content-Length: " + std::to_string(result.size()));
-		str.append("\n\n");		
-		str.append(result);
-		reply(str);
-	}
-
-};
-*/]]></body>
+]]></body>
     </implementationPreface>
     <publicDeclarations xmi:id="_5rMyxO5TEeitL-zKjjNp2A">
       <body><![CDATA[friend class LocalServerConnection;
@@ -1488,6 +1348,8 @@ friend class ServerJob;]]></body>
   <CppPropertySets:GeneralParameterProperties xmi:id="_YPeFkHxrEemQvv1wPLSA6g" base_Parameter="_YPbpUXxrEemQvv1wPLSA6g" nativeType="const std::string&amp;"/>
   <CppPropertySets:GeneralParameterProperties xmi:id="_ETXVQLqtEem5vPW57wwiFQ" base_Parameter="_ETGPgLqtEem5vPW57wwiFQ" nativeType="std::string"/>
   <CppPropertySets:GeneralParameterProperties xmi:id="_8Mvo8Mr-Eemd-cvOi0spQQ" base_Parameter="_8MtMssr-Eemd-cvOi0spQQ" nativeType="const std::string&amp;"/>
-  <CppPropertySets:GeneralAttributeProperties xmi:id="_bYMsEOTpEe6Re8YX3cK64Q" base_Property="_bYC7EOTpEe6Re8YX3cK64Q" nativeType="ServerJob*"/>
+  <CppPropertySets:GeneralAttributeProperties xmi:id="_bYMsEOTpEe6Re8YX3cK64Q" base_Property="_bYC7EOTpEe6Re8YX3cK64Q" nativeType="RTJob*"/>
   <CppPropertySets:TargetRTSAttributeProperties xmi:id="_bYMsEeTpEe6Re8YX3cK64Q" base_Property="_bYC7EOTpEe6Re8YX3cK64Q" generateDescriptor="false"/>
+  <CppPropertySets:GeneralAttributeProperties xmi:id="_9GQ3cOeBEe6S2oclZuMFIg" base_Property="_7RTg8OeBEe6S2oclZuMFIg" nativeType="RTThread*"/>
+  <CppPropertySets:TargetRTSAttributeProperties xmi:id="_ldI0kOeCEe6S2oclZuMFIg" base_Property="_7RTg8OeBEe6S2oclZuMFIg" generateDescriptor="false"/>
 </xmi:XMI>
