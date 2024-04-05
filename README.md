@@ -16,25 +16,17 @@ It's possible to implement a custom handling of incoming messages, but the defau
 To implement your own custom handling of received messages, override the operation `TCPServer::handleReceivedMessageCustom()` and set the config property `defaultHandlingOfReceivedMessages` to false.
 
 ## Build the Library
-Add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application.
+The latest version of library removed the POCO dependency and using APIs from TargetRTS.
 
-Note that the TC `tcpServerLib.tcjs` is designed to be built only as a prerequisite of an executable TC. It will automatically reuse some of the TC properties from the top executable by calling `TCF.getTopTC()`. Here is an example of such a TC property:
+To make use of this library add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application.
 
-`
-tc.targetConfiguration = TCF.getTopTC().eval.targetConfiguration;
-`
-
-TCP Server library uses the [POCO C++ libraries](https://pocoproject.org). Several prebuilt versions of the POCO library as well as include headers are available in installation under `rsa_rt/tcpserver/poco`. The C++ External Library TC `pocoLib.tcjs` defines include paths and necessary linked libraries. It is used as prerequisite to `tcpServerLib.tcjs` and will automatically add all necessary linked libraries to the top executable.
-
-The location of the POCO library root folder is set in the 'aPocoLoc' property of `pocoLib.tcjs` TC (using the Code tab of the TC editor):
+Note that the TC `tcpServerLib.tcjs` is designed to be built as a prerequisite of an executable TC and will reuse some of the TC properties from that executable (using the topTC variable). Here is an example of such a TC property:
 
 `
-tc.aPocoLoc = '$(RSA_RT_HOME)/tcpserver/poco/';
+tc.compileArguments = topTC.compileArguments || '$(DEBUG_TAG)';
 `
 
-List of linked libraries is defined in `tc.libraries` property of the TC `pocoLib.tcjs` based on the target configuration of the top executable.
-
-If you want to be able to build the library TC directly (i.e. as a "top TC"), you should use `tcpServerLib_custom.tcjs` and first modify the target configuration and compiler settings.
+If you want to be able to build the library TC directly (i.e. as a "top TC"), you should first modify these TC properties (essentially making sure that the value after the '||' is appropriate).
 
 ## Configuration Properties
 Configuration properties are defined as static attributes of the `TCPServer_Config` class. If you don't want to change their default values in the library, you have to programmatically override the attribute values you want to change. You can do this by overriding the operation `init()` in your capsule that inherits from `TCPServer`. For example:
