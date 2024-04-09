@@ -1,6 +1,6 @@
 # lib-tcp-server
 A library for [DevOps Model RealTime](https://www.hcl-software.com/devops-model-realtime) which allows a realtime application to communicate over TCP with other applications.
-Note: This library requires Model RealTime 10.3 2018.48 or later, and further documentation can be found [here](https://model-realtime.hcldoc.com/help/topic/com.ibm.xtools.rsarte.webdoc/Articles/Integrations/TCPServer%20Library.html).
+Note: Master branch of this library requires Model RealTime 12.0.2 release or later while release tag V1.0 requires Model RealTime 10.3 2018.48 or later, and further documentation can be found [here](https://model-realtime.hcldoc.com/help/topic/com.ibm.xtools.rsarte.webdoc/Articles/Integrations/TCPServer%20Library.html).
 
 ## Usage
 <img src="https://github.com/hcl-pnp-rtist/lib-tcp-server/blob/master/img/usage.jpg" width="805" height="358">
@@ -16,6 +16,8 @@ It's possible to implement a custom handling of incoming messages, but the defau
 To implement your own custom handling of received messages, override the operation `TCPServer::handleReceivedMessageCustom()` and set the config property `defaultHandlingOfReceivedMessages` to false.
 
 ## Build the Library
+
+### Master branch
 The latest version of library removed the POCO dependency and using APIs from TargetRTS.
 
 To make use of this library add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application.
@@ -27,6 +29,28 @@ tc.compileArguments = topTC.compileArguments || '$(DEBUG_TAG)';
 `
 
 If you want to be able to build the library TC directly (i.e. as a "top TC"), you should first modify these TC properties (essentially making sure that the value after the '||' is appropriate).
+
+### Tag V1.0
+The release Tag V1.0 of this library depends on POCO library and below instruction must be follow to use this release.
+Add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application.
+
+Note that the TC `tcpServerLib.tcjs` is designed to be built only as a prerequisite of an executable TC. It will automatically reuse some of the TC properties from the top executable by calling `TCF.getTopTC()`. Here is an example of such a TC property:
+
+`
+tc.targetConfiguration = TCF.getTopTC().eval.targetConfiguration;
+`
+
+TCP Server library uses the [POCO C++ libraries](https://pocoproject.org). Several prebuilt versions of the POCO library as well as include headers are available in installation under `rsa_rt/tcpserver/poco`. The C++ External Library TC `pocoLib.tcjs` defines include paths and necessary linked libraries. It is used as prerequisite to `tcpServerLib.tcjs` and will automatically add all necessary linked libraries to the top executable.
+
+The location of the POCO library root folder is set in the 'aPocoLoc' property of `pocoLib.tcjs` TC (using the Code tab of the TC editor):
+
+`
+tc.aPocoLoc = '$(RSA_RT_HOME)/tcpserver/poco/';
+`
+
+List of linked libraries is defined in `tc.libraries` property of the TC `pocoLib.tcjs` based on the target configuration of the top executable.
+
+If you want to be able to build the library TC directly (i.e. as a "top TC"), you should use `tcpServerLib_custom.tcjs` and first modify the target configuration and compiler settings.
 
 ## Configuration Properties
 Configuration properties are defined as static attributes of the `TCPServer_Config` class. If you don't want to change their default values in the library, you have to programmatically override the attribute values you want to change. You can do this by overriding the operation `init()` in your capsule that inherits from `TCPServer`. For example:
@@ -40,7 +64,9 @@ The following configuration properties are available:
 - **defaultHandlingOfReceivedMessages**:boolean 
 If true, all incoming TCP messages are assumed to be string-encoded JSON objects according to the format described below. Set to false if you wish to implement your own custom handling of incoming messages.
 - **maxWaitForReply**:integer
-The max number of milliseconds to wait for the Model RealTime application to reply to a request for sending or invoking an event to it. If the TCPServer doesn't get a confirmation from the application within the specified time limit, it will assume that the Model RealTime application failed to receive the event and return an error message. 
+The max number of milliseconds to wait for the Model RealTime application to reply to a request for sending or invoking an event to it. If the TCPServer doesn't get a confirmation from the application within the specified time limit, it will assume that the Model RealTime application failed to receive the event and return an error message.
+- **maxSupportedClient**:integer
+The maximum number of supported client. This configuration is not available on POCO based release while available in master branch. This configuration requires Model RealTime release 12.0.2 or later.
 - **port**:integer
 The TCP port in the Model RealTime application used for incoming messages.
 - **remoteHost**:string

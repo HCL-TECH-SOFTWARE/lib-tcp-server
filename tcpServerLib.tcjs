@@ -3,6 +3,7 @@ tc.sources = [
     'platform:/resource/LibTcpServer/LibTCPServer.emx#_n2OxwO5SEeitL-zKjjNp2A',
 ];
 // TCF.getTopTC() will return a top TC for which this TC must be a direct or indirect prerequisite
+tc.compilationMakeArguments = '';
 tc.compilationMakeType = TCF.getTopTC().eval.compilationMakeType;
 tc.compileArguments = TCF.getTopTC().eval.compileArguments;
 tc.copyrightText = `

@@ -3,7 +3,7 @@
 <!--DevOps Model RealTime 12.0.1-->
 <?com.ibm.xtools.emf.core.signature <signature id="com.ibm.xtools.uml.msl.model" version="7.0.0"><feature description="" name="com.ibm.xtools.ruml.feature" url="" version="7.0.0"/></signature>?>
 <?com.ibm.xtools.emf.core.signature <signature id="com.ibm.xtools.mmi.ui.signatures.diagram" version="7.0.0"><feature description="" name="Rational Modeling Platform (com.ibm.xtools.rmp)" url="" version="7.0.0"/></signature>?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:CppPropertySets="http:///schemas/CppPropertySets/_5TG7AMk4EeO2m9WtkWjeeQ/67" xmlns:Default="http:///schemas/Default/_fNm3AAqoEd6-N_NOT9vsCA/2" xmlns:Standard="http://www.eclipse.org/uml2/schemas/Standard/1" xmlns:UMLRealTime="http:///schemas/UMLRealTime/_3TUzoHq6Ed2hSeAAWZznoA/119" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.3/notation" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmlns:umlnotation="http://www.ibm.com/xtools/1.5.3/Umlnotation" xsi:schemaLocation="http:///schemas/CppPropertySets/_5TG7AMk4EeO2m9WtkWjeeQ/67 pathmap://CPP_LANGUAGE_PROFILE/CppPropertySets.epx#_5TYAwMk4EeO2m9WtkWjeeQ?CppPropertySets/CppPropertySets? http:///schemas/Default/_fNm3AAqoEd6-N_NOT9vsCA/2 pathmap://UML2_MSL_PROFILES/Default.epx#_fNwoAAqoEd6-N_NOT9vsCA?Default/Default? http://www.eclipse.org/uml2/schemas/Standard/1 pathmap://UML_PROFILES/Standard.profile.uml#_yzU58YinEdqtvbnfB2L_5w http:///schemas/UMLRealTime/_3TUzoHq6Ed2hSeAAWZznoA/119 pathmap://RT_PROPERTIES/UMLRealTime.epx#_3TUzoXq6Ed2hSeAAWZznoA?UMLRealTime/UMLRealTime?">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:CppPropertySets="http:///schemas/CppPropertySets/_5TG7AMk4EeO2m9WtkWjeeQ/67" xmlns:Default="http:///schemas/Default/_fNm3AAqoEd6-N_NOT9vsCA/2" xmlns:Standard="http://www.eclipse.org/uml2/schemas/Standard/1" xmlns:UMLRealTime="http:///schemas/UMLRealTime/_3TUzoHq6Ed2hSeAAWZznoA/119" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmlns:umlnotation="http://www.ibm.com/xtools/1.5.3/Umlnotation" xsi:schemaLocation="http:///schemas/CppPropertySets/_5TG7AMk4EeO2m9WtkWjeeQ/67 pathmap://CPP_LANGUAGE_PROFILE/CppPropertySets.epx#_5TYAwMk4EeO2m9WtkWjeeQ?CppPropertySets/CppPropertySets? http:///schemas/Default/_fNm3AAqoEd6-N_NOT9vsCA/2 pathmap://UML2_MSL_PROFILES/Default.epx#_fNwoAAqoEd6-N_NOT9vsCA?Default/Default? http://www.eclipse.org/uml2/schemas/Standard/1 pathmap://UML_PROFILES/Standard.profile.uml#_yzU58YinEdqtvbnfB2L_5w http:///schemas/UMLRealTime/_3TUzoHq6Ed2hSeAAWZznoA/119 pathmap://RT_PROPERTIES/UMLRealTime.epx#_3TUzoXq6Ed2hSeAAWZznoA?UMLRealTime/UMLRealTime?">
   <uml:Package xmi:id="_n2OxwO5SEeitL-zKjjNp2A" name="LibTCPServer">
     <eAnnotations xmi:id="_n2Oxwe5SEeitL-zKjjNp2A" source="uml2.diagrams" references="_n2Oxwu5SEeitL-zKjjNp2A">
       <contents xmi:type="umlnotation:UMLDiagram" xmi:id="_n2Oxwu5SEeitL-zKjjNp2A" type="Class" name="API">
@@ -51,7 +51,7 @@
           <element xsi:nil="true"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DUwG8-5UEeitL-zKjjNp2A" x="889" y="2159" width="5607" height="7494"/>
         </children>
-        <children xmi:type="notation:Shape" xmi:id="_kdX4MO5VEeitL-zKjjNp2A" type="Note" fontName="Segoe UI" fontHeight="8" description="&lt;p>Library for letting an DevOps Model RealTime application communicate over TCP with other applications. For example, external applications can use it to send events into the DevOps Model RealTime application.&lt;/p>" fillColor="13956346" transparency="0" lineColor="12632258" lineWidth="1">
+        <children xmi:type="notation:Shape" xmi:id="_kdX4MO5VEeitL-zKjjNp2A" type="Note" fontName="Segoe UI" fontHeight="8" description="&lt;p>Library for letting a Model RealTime application communicate over TCP with other applications. For example, external applications can use it to send events into the DevOps Model RealTime application.&lt;/p>" fillColor="13956346" transparency="0" lineColor="12632258" lineWidth="1">
           <children xmi:type="notation:BasicDecorationNode" xmi:id="_kdYfQO5VEeitL-zKjjNp2A" type="DiagramName">
             <element xsi:nil="true"/>
           </children>
@@ -304,7 +304,7 @@
 init();
 
 // Launch server thread
-job = new ServerJob(this, config.port, config.logToStdOut, config.maxWaitForReply, config.maxSupportedClient);
+job = new ServerJob(*this, config.port, config.logToStdOut, config.maxWaitForReply, config.maxSupportedClient);
 serverThread = new RTThread(job, 20000 /* stack size */);
 
 //cout << "TCP server started" << endl;]]></body>
@@ -373,13 +373,13 @@ delete job;]]></body>
 	RTJsonResult jsonResult;
 	if(!parse.parseJsonString(jsonResult, str))
 	{
-		conn->replyHTTPStatus(ITCPConnection::Status::Error, "Failed to parse JSON: " + str);
+		conn->replyStatus(ITCPConnection::Status::Error, "Failed to parse JSON: " + str);
 		return;
 	}
 
 	RTJsonResult command = jsonResult["command"];
 	if (!command.ok()) {
-		conn->replyHTTPStatus(ITCPConnection::Status::Error, "Failed to get 'command' key from JSON: " + str);
+		conn->replyStatus(ITCPConnection::Status::Error, "Failed to get 'command' key from JSON: " + str);
 		return;
 	}
 	std::string cmd = jsonResult["command"].get_string();
@@ -469,7 +469,14 @@ delete job;]]></body>
 	    }
 
 	    // Is a port index specified?
-	    int portIndex = jsonResult["portIndex"].get_int();
+	    int portIndex = -1;
+	    std::string portIndexString = jsonResult["portIndex"].get_string();
+	    if (!portIndexString.empty()) {
+            portIndex = RTMemoryUtil::atoi(portIndexString.c_str());
+	    } else {
+            conn->replyStatus(ITCPConnection::Status::Error, "Illegal portIndex: ");
+	        return;
+	    }
 	    
 	    if (cmd == "sendEvent") {	    
 	        std::string priorityString =  jsonResult["priority"].get_string();
@@ -690,10 +697,13 @@ if (config.logToStdOut)
 	}
 	writeSuccess = true;
 
-	static const RTTimespec awhile(1L, 0L);
+	static const RTTimespec awhile(config.maxWaitForReply / 1000, 0L);
 	while (!ioMonitor.wait(&awhile)) {
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-		std::cout << "Waiting for out message... " << std::endl;
+		if(config.logToStdOut) {
+			std::cout << "No out message available within 5 seconds " << std::endl;
+		}
+		tcp.close();
+		return;
 	}
 
 	// Read response, if any
@@ -709,8 +719,10 @@ if (config.logToStdOut)
 
 	tcp.close();
 
-	if (config.logToStdOut)
+	if (config.logToStdOut) {
 		std::cout << "Response for out message: " << received << std::endl;
+	}
+
 	handleResponseForOutMessage(received);
 ]]></body>
       </ownedBehavior>
@@ -1101,14 +1113,16 @@ class LocalServerConnection : public ITCPConnection {
 	RTTcpSocket& listenSock;
 	RTTcpSocket clientSock;
 	RTIOMonitor ioMonitorClient;
+	long maxWaitForReply;
 	bool logToStdOut;
 	std::atomic_bool hasReplied;
 
 	friend class ServerJob;
 
 public:
-	LocalServerConnection(TCPServer_Actor& srv, RTTcpSocket& sock, bool log)
-			:server(srv), listenSock(sock), logToStdOut(log), hasReplied(false) {
+	LocalServerConnection(TCPServer_Actor& srv, RTTcpSocket& sock, bool log, long maxWait)
+			:server(srv), listenSock(sock), logToStdOut(log),
+			 hasReplied(false), maxWaitForReply(maxWait) {
 		clientSock.registerWith(&ioMonitorClient);
 	}
 
@@ -1119,7 +1133,9 @@ public:
 	bool init() {
 
 		if (!clientSock.acceptFrom(listenSock)) {
-			std::cerr << "Connection failed to accept socket" << std::endl;
+			if(logToStdOut) {
+				std::cerr << "Connection failed to accept socket" << std::endl;
+			}
 			return false;
 		}
 		
@@ -1127,9 +1143,11 @@ public:
 			std::cout << "TCP request received: ";
 
 		// Wait for data to be available on the socket
-		static const RTTimespec awhile(5L, 0L);
+		static const RTTimespec awhile(maxWaitForReply/1000, 0L);
 		while (!ioMonitorClient.wait(&awhile)) {
-			std::cout << "No data available within 5 s. " << std::endl;
+			if (logToStdOut) {
+				std::cout << "No data available within 5 seconds. " << std::endl;
+			}
 			return false;
 		}
 
@@ -1225,7 +1243,7 @@ public:
 
 // Intercept incoming TCP requests and give them to the TCPServer for processing
 class ServerJob : public RTJob {
-	TCPServer_Actor* server;
+	TCPServer_Actor & server;
 	const unsigned int maxSupportedClient;
 	unsigned int port;
 	long maxWaitForReply;
@@ -1233,7 +1251,7 @@ class ServerJob : public RTJob {
 	std::list<LocalServerConnection*> connections;
 
 public:
-	ServerJob(TCPServer_Actor* s, unsigned int p, bool log, long maxWait, const unsigned int maxClient)
+	ServerJob(TCPServer_Actor & s, unsigned int p, bool log, long maxWait, const unsigned int maxClient)
 	:server(s), port(p), logToStdOut(log), maxWaitForReply(maxWait), maxSupportedClient(maxClient) {}
 
 	virtual const char* name( void ) const override {
@@ -1249,18 +1267,20 @@ public:
 		listenSock.setMaxPendingConnections(maxSupportedClient);
 		if (!listenSock.create() || !listenSock.listen(port))
 		{
-			std::cerr << "Failed to create TCP accept socket" << std::endl;
+			if(logToStdOut) {
+				std::cerr << "Failed to create TCP accept socket" << std::endl;
+			}
 			listenSock.close();
 			return;
 		}
 
 		do {
-			static const RTTimespec awhile(5L /* s */, 0L/*maxWaitForReply*1000*1000*/ /* ns */);
+			static const RTTimespec awhile(maxWaitForReply / 1000 /* s */, 0L /* ns */);
 
 			if (ioMonitor.wait(&awhile)) {
 				//Incoming connection
 
-				LocalServerConnection* lsc = new LocalServerConnection(*server, listenSock, logToStdOut);
+				LocalServerConnection* lsc = new LocalServerConnection(server, listenSock, logToStdOut, maxWaitForReply);
 
 				if (!lsc->init()) {
 					delete lsc;
@@ -1274,7 +1294,9 @@ public:
 				while (!connections.empty()) {
 					LocalServerConnection* lsc = connections.front();
 					if (lsc->hasReplied) {
-						std::cout << "Reply detected. Removing LocalServerConnection" << std::endl;
+						if (logToStdOut) {
+							std::cout << "Reply detected. Removing LocalServerConnection" << std::endl;
+						}
 					}
 					else {
 						std::ostringstream s;
