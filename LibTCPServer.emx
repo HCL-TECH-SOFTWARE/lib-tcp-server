@@ -51,7 +51,7 @@
           <element xsi:nil="true"/>
           <layoutConstraint xmi:type="notation:Bounds" xmi:id="_DUwG8-5UEeitL-zKjjNp2A" x="889" y="2159" width="5607" height="7494"/>
         </children>
-        <children xmi:type="notation:Shape" xmi:id="_kdX4MO5VEeitL-zKjjNp2A" type="Note" fontName="Segoe UI" fontHeight="8" description="&lt;p>Library for letting a Model RealTime application communicate over TCP with other applications. For example, external applications can use it to send events into the DevOps Model RealTime application.&lt;/p>" fillColor="13956346" transparency="0" lineColor="12632258" lineWidth="1">
+        <children xmi:type="notation:Shape" xmi:id="_kdX4MO5VEeitL-zKjjNp2A" type="Note" fontName="Segoe UI" fontHeight="8" description="&lt;p>Library for letting an DevOps Model RealTime application communicate over TCP with other applications. For example, external applications can use it to send events into the DevOps Model RealTime application.&lt;/p>" fillColor="13956346" transparency="0" lineColor="12632258" lineWidth="1">
           <children xmi:type="notation:BasicDecorationNode" xmi:id="_kdYfQO5VEeitL-zKjjNp2A" type="DiagramName">
             <element xsi:nil="true"/>
           </children>
@@ -382,12 +382,17 @@ delete job;]]></body>
 		conn->replyStatus(ITCPConnection::Status::Error, "Failed to get 'command' key from JSON: " + str);
 		return;
 	}
-	std::string cmd = jsonResult["command"].get_string();
+	std::string cmd = command.get_string();
 	if (config.logToStdOut)
 		std::cout << "JSON command received: " << cmd << std::endl;
 
 	if (cmd == "sendEvent" || cmd == "invokeEvent") {
-		std::string portName =  jsonResult["port"].get_string();
+		RTJsonResult port = jsonResult["port"];
+		if(!port.ok()) {
+			conn->replyStatus(ITCPConnection::Status::Error, "Failed to get 'port' key from JSON: " + str);
+			return;
+		}
+		std::string portName =  port.get_string();
 
 		// Find a matching port in this capule
 		const RTActor_class* actorData = getActorData();
@@ -412,7 +417,12 @@ delete job;]]></body>
 		const RTProtocolDescriptor* protocolDescriptorConjugate = protocolDescriptor->conjugate;
 
 		// Find a matching out event in the port protocol
-		std::string eventName =  jsonResult["event"].get_string();
+		RTJsonResult event = jsonResult["event"];
+		if(!event.ok()) {
+			conn->replyStatus(ITCPConnection::Status::Error, "Failed to get 'event' key from JSON: " + str);
+			return;
+		}
+		std::string eventName =  event.get_string();
 
 		const RTSignalDescriptor* foundSignalDescriptor = 0;
 	    const RTSignalDescriptor* signalDescriptor = protocolDescriptorConjugate->inSignals;
@@ -474,7 +484,7 @@ delete job;]]></body>
 	    if (!portIndexString.empty()) {
             portIndex = RTMemoryUtil::atoi(portIndexString.c_str());
 	    } else {
-            conn->replyStatus(ITCPConnection::Status::Error, "Illegal portIndex: ");
+            conn->replyStatus(ITCPConnection::Status::Error, "Illegal portIndex: " + portIndexString);
 	        return;
 	    }
 	    
@@ -592,7 +602,7 @@ delete job;]]></body>
 	}
 	else {
 		// Unknown command
-		conn->replyStatus(ITCPConnection::Status::Error, "Unknown command: " + cmd);	
+		conn->replyStatus(ITCPConnection::Status::Error, "Unknown command: " + cmd);
 	}]]></body>
       </ownedBehavior>
       <ownedBehavior xmi:type="uml:OpaqueBehavior" xmi:id="_29hpUPF5EeiGPObbQ5S9rA" name="unexpectedMessage" specification="_j8WecPF5EeiGPObbQ5S9rA">
@@ -622,9 +632,9 @@ if (type != 0) {
 	str.append("\" ");
 }
 if (data != 0) {
-	RTDynamicStringOutBuffer buf;		
+	RTDynamicStringOutBuffer buf;
 	RTAsciiEncoding coding(&buf);
-	coding.put(data, type);	
+	coding.put(data, type);
 	str.append(", \"data\" : ");
 	// Make sure the data is encoded as a valid JSON string
 	std::string data(buf.getString());
@@ -700,7 +710,7 @@ if (config.logToStdOut)
 	static const RTTimespec awhile(config.maxWaitForReply / 1000, 0L);
 	while (!ioMonitor.wait(&awhile)) {
 		if(config.logToStdOut) {
-			std::cout << "No out message available within 5 seconds " << std::endl;
+			std::cout << "No out message available within "<< config.maxWaitForReply << " ms" << std::endl;
 		}
 		tcp.close();
 		return;
@@ -751,7 +761,12 @@ if (config.logToStdOut)
 		std::cout << "Response contained JSON command: " << cmd << std::endl;
 
 	if (cmd == "reply") {
-		std::string portName =  jsonResult["port"].get_string();
+		RTJsonResult port = jsonResult["port"];
+		if(!port.ok()) {
+			std::cerr << "ERROR: Failed to get 'port' key from JSON: " + response;
+			return;
+		}
+		std::string portName =  port.get_string();
 		// Find a matching port in this capule
 		const RTActor_class* actorData = getActorData();
 
@@ -775,7 +790,12 @@ if (config.logToStdOut)
 		const RTProtocolDescriptor* protocolDescriptorConjugate = protocolDescriptor->conjugate;
 
 		// Find a matching out event in the port protocol
-		std::string eventName =  jsonResult["event"].get_string();
+		RTJsonResult event = jsonResult["event"];
+		if(!event.ok()) {
+			std::cerr << "ERROR: Failed to get 'event' key from JSON: " + response;
+			return;
+		}
+		std::string eventName =  event.get_string();
 
 		const RTSignalDescriptor* foundSignalDescriptor = 0;
 	    const RTSignalDescriptor* signalDescriptor = protocolDescriptorConjugate->inSignals;
@@ -1133,9 +1153,7 @@ public:
 	bool init() {
 
 		if (!clientSock.acceptFrom(listenSock)) {
-			if(logToStdOut) {
-				std::cerr << "Connection failed to accept socket" << std::endl;
-			}
+			std::cerr << "Connection failed to accept socket" << std::endl;
 			return false;
 		}
 		
@@ -1146,7 +1164,7 @@ public:
 		static const RTTimespec awhile(maxWaitForReply/1000, 0L);
 		while (!ioMonitorClient.wait(&awhile)) {
 			if (logToStdOut) {
-				std::cout << "No data available within 5 seconds. " << std::endl;
+				std::cout << "No data available within "<< maxWaitForReply << " ms" << std::endl;
 			}
 			return false;
 		}
@@ -1267,9 +1285,7 @@ public:
 		listenSock.setMaxPendingConnections(maxSupportedClient);
 		if (!listenSock.create() || !listenSock.listen(port))
 		{
-			if(logToStdOut) {
-				std::cerr << "Failed to create TCP accept socket" << std::endl;
-			}
+			std::cerr << "Failed to create TCP accept socket" << std::endl;
 			listenSock.close();
 			return;
 		}
