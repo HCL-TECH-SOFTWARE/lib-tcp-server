@@ -481,13 +481,18 @@ delete job;]]></body>
 	    // Is a port index specified?
 	    int portIndex = -1;
 	    std::string portIndexString = jsonResult["portIndex"].get_string();
+
 	    if (!portIndexString.empty()) {
-            portIndex = RTMemoryUtil::atoi(portIndexString.c_str());
-	    } else {
-            conn->replyStatus(ITCPConnection::Status::Error, "Illegal portIndex: " + portIndexString);
-	        return;
+	        for( int i = 0; i < portIndexString.length(); i++ ) {
+	            if(!isdigit(portIndexString[i])) {
+	                // reply error and return if portIndex is not digit
+	                conn->replyStatus(ITCPConnection::Status::Error, "Illegal portIndex: " + portIndexString);
+	                return;
+	            }
+	        }
+	        portIndex = RTMemoryUtil::atoi(portIndexString.c_str());
 	    }
-	    
+
 	    if (cmd == "sendEvent") {	    
 	        std::string priorityString =  jsonResult["priority"].get_string();
 	    	std::string str_priority = "General";
