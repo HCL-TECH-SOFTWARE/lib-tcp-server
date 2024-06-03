@@ -2,12 +2,8 @@ let tc = TCF.define(TCF.CPP_TRANSFORM);
 tc.sources = [
     'platform:/resource/LibTcpServer/LibTCPServer.emx#_n2OxwO5SEeitL-zKjjNp2A',
 ];
-tc.prerequisites = [
-    'platform:/resource/LibTcpServer/pocoLib.tcjs',
-];
 tc.compilationMakeArguments = '';
 tc.compilationMakeType = MakeType.GNU_make;
-tc.compileArguments = '$(DEFINE_TAG)POCO_STATIC -fexceptions';
 tc.copyrightText = `
 /*******************************************************************************
  * (c) Copyright HCL Technologies Ltd. 2018, 2024.  MIT Licensed!
