@@ -22,12 +22,6 @@ The latest implementation, that is available on the master branch, has no depend
 
 To make use of this library add the TC `tcpServerLib.tcjs` as a prerequisite of the executable TC for your Model RealTime application.
 
-Note that the TC `tcpServerLib.tcjs` is designed to be built as a prerequisite of an executable TC and will reuse some of the TC properties from that executable (using the topTC variable). Here is an example of such a TC property:
-
-`
-tc.compileArguments = topTC.compileArguments || '$(DEBUG_TAG)';
-`
-
 Note that the TC `tcpServerLib.tcjs` is designed to be built only as a prerequisite of an executable TC. It will automatically reuse some of the TC properties from the top executable by calling `TCF.getTopTC()`. Here is an example of such a TC property:
 
 `
