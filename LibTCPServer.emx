@@ -402,7 +402,7 @@ delete job;]]></body>
 		const RTPortDescriptor* portDescriptor = actorData->ports;
 		for (int i = actorData->numPorts; --i >= 0 && !foundPortDescriptor; ++portDescriptor ) {
 			RTProtocol* port = RTObjectOf( RTProtocol, portDescriptor->offset, this );
-			if (!RTMemoryUtil::strcmp(portName.c_str(), port->getName())) {
+			if (portName == port->getName()) {
 				foundPortDescriptor = portDescriptor;
 				foundPort = port;
 			}
